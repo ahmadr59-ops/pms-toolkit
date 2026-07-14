@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0
+- Shared engineering database: pipe schedule dimensions (data/schedules.json) + material master.
+- ASME B31.3 wall-thickness engine (pmskit.thickness) — code method only, no copyrighted stress tables.
+- Schedule-adequacy compliance check (pmskit.check) over a PMS, using a material datapack.
+- Private datapack model for copyrighted allowable-stress values (git-ignored); synthetic demo fallback.
+- CLI: `pmskit thickness` and `pmskit check`.
+- Dashboard: **Thickness** tab (single calc + B31.3 schedule check on the loaded PMS).
+
 ## 0.3.0
 - Deviation engine: compare a Reference (baseline) PMS vs a Contractor PMS.
 - Description normalizer so comparison is on engineering fields, not raw wording.

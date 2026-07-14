@@ -1,0 +1,18 @@
+{
+  "meta": {
+    "schema": "material-master v1",
+    "SYNTHETIC": true,
+    "note": "SYNTHETIC / ILLUSTRATIVE stress values for demo only — NOT real ASME data. Replace locally with your own datapack (datapacks/materials.json) built from your licensed standard.",
+    "stress_units": "MPa", "temp_units": "C"
+  },
+  "materials": [
+    {"spec": "ASTM A106", "grade": "B", "family": "ferritic", "min_temp": -29, "max_temp": 400,
+     "s": [[38, 120], [100, 118], [200, 110], [300, 100], [400, 80]]},
+    {"spec": "ASTM A53", "grade": "B", "family": "ferritic", "min_temp": -29, "max_temp": 400,
+     "s": [[38, 120], [100, 118], [200, 110], [300, 100], [400, 80]]},
+    {"spec": "ASTM A312", "grade": "TP316", "family": "austenitic", "min_temp": -254, "max_temp": 500,
+     "s": [[38, 115], [100, 100], [200, 90], [300, 82], [400, 78], [500, 72]]},
+    {"spec": "ASTM A335", "grade": "P11", "family": "ferritic", "min_temp": -29, "max_temp": 550,
+     "s": [[38, 130], [200, 120], [400, 100], [500, 70], [550, 40]]}
+  ]
+}

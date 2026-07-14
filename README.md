@@ -26,8 +26,11 @@ validator, a Reference-vs-Contractor deviation engine, and a zero-dependency web
   tables are used or reproduced.**
 - **Deviation list** — compare a Reference (baseline) PMS vs a Contractor PMS and
   produce a standard, consultant-style deviation list (Excel).
+- **ASME B31.3 thickness & schedule-adequacy** — compute pressure-design wall
+  thickness and flag PIPE rows whose selected schedule is thinner than required.
+  (Copyrighted allowable-stress tables load from a local datapack — see [`docs/datapacks.md`](docs/datapacks.md).)
 - **Exports** — JSON / CSV / XLSX.
-- **Dashboard** (`web/`) — Overview, Explorer, Validate, Deviation, Schema/JSON, Export,
+- **Dashboard** (`web/`) — Overview, Explorer, Validate, Deviation, Thickness, Schema/JSON, Export,
   drag-drop Import. Static; deployable free to GitHub Pages.
 
 ## Supported PMS sources (adapters)
@@ -62,6 +65,10 @@ pmskit export pms.json --csv pms.csv --xlsx pms.xlsx
 # 4) Compare Reference (baseline) vs Contractor -> standard deviation list
 pmskit deviation reference.json contractor.json --xlsx deviation.xlsx \
         --meta project="My Project" doc_no=PMS-DEV-001 rev=A
+
+# ASME B31.3 wall thickness (single calc) and schedule check over a PMS
+pmskit thickness --pressure 20 --od 219.1 --stress 120 --allowance 3
+pmskit check pms.json --datapack datapacks/materials.json --only-flagged
 
 pmskit report pms.json      # coverage / confidence
 pmskit adapters             # list available company adapters

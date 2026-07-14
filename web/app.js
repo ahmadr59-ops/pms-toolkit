@@ -38,6 +38,7 @@ $$('.tab').forEach(t=>t.onclick=()=>{
   t.classList.add('active'); $('#'+t.dataset.v).classList.add('active');
   if(t.dataset.v==='schema') renderSchema();
   if(t.dataset.v==='deviation') renderDeviation();
+  if(t.dataset.v==='thickness') renderThickness();
 });
 
 // ---------- overview ----------
@@ -283,6 +284,78 @@ function renderDeviation(){
     const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
     const lines=[H.join(',')].concat(DEV.rows.map(r=>K.map(k=>q(r[k])).join(',')));
     dl('deviation_list.csv','﻿'+lines.join('\r\n'),'text/csv');
+  };
+}
+
+// ---------- Thickness (ASME B31.3) ----------
+let SCHED=null, MATDB=null, THK=null, thkFilter='all';
+async function loadDB(){
+  if(SCHED&&MATDB) return;
+  try{const a=await fetch('data/schedules.json');SCHED=a.ok?await a.json():{pipe:{},aliases:{}};}catch(e){SCHED={pipe:{},aliases:{}};}
+  try{const b=await fetch('data/materials.sample.json');MATDB=b.ok?await b.json():{meta:{},materials:[]};}catch(e){MATDB={meta:{},materials:[]};}
+}
+async function renderThickness(){
+  await loadDB();
+  const m=$('#thickness');
+  const warn=(MATDB.meta&&MATDB.meta.SYNTHETIC)?`<div class="notebox">⚠️ Using <b>SYNTHETIC</b> demo allowable-stress values (not real ASME data). For real results, load your own datapack locally — see <code>docs/datapacks.md</code>.</div>`:'';
+  let out=`<h2 style="margin-top:0">ASME B31.3 — Wall Thickness</h2>
+   <div class="sub">Pressure-design thickness (para. 304.1.2). The equation and Y-coefficient are the code method; allowable stress S comes from the loaded material datapack.</div>
+   ${warn}
+   <div class="cards">
+     <div class="kv"><div class="k">Single calculation</div>
+       <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px">
+         <label>P (barg)<input id="t-P" type="text" value="20"></label>
+         <label>OD D (mm)<input id="t-D" type="text" value="219.1"></label>
+         <label>S (MPa)<input id="t-S" type="text" value="120"></label>
+         <label>c allow. (mm)<input id="t-c" type="text" value="3"></label>
+         <label>E<input id="t-E" type="text" value="1"></label>
+         <label>W<input id="t-W" type="text" value="1"></label>
+         <label>Temp (°C)<input id="t-T" type="text" value="38"></label>
+         <label>Family<select id="t-fam"><option>ferritic</option><option>austenitic</option></select></label>
+       </div>
+       <button id="t-calc" style="margin-top:8px">Calculate</button>
+       <div id="t-res" class="muted" style="margin-top:8px;font-size:13px"></div>
+     </div>
+     <div class="kv"><div class="k">Schedule check on loaded PMS</div>
+       <div class="muted" style="font-size:12px;margin-top:6px">Runs a B31.3 required-thickness check on every PIPE row of the currently loaded PMS (${esc(DATA.meta.company||'—')}, ${CLASSES().length} classes) and compares with the selected schedule.</div>
+       <button id="t-run" class="sec" style="margin-top:8px">Run B31.3 schedule check</button>
+     </div>
+   </div>`;
+  if(THK){
+    const s=THK.summary; const rows=THK.rows.filter(r=>thkFilter==='all'||(thkFilter==='under'&&r.status==='UNDER-THICKNESS')||(thkFilter==='ok'&&r.status==='OK'));
+    out+=`<div class="cards">
+       <div class="kv"><div class="k">OK</div><div class="v sev-info" style="color:var(--acc2)">${s.ok}</div></div>
+       <div class="kv"><div class="k">Under-thickness</div><div class="v sev-error">${s.under}</div></div>
+       <div class="kv"><div class="k">Not evaluated</div><div class="v sev-warning">${s.not_evaluated}</div></div>
+       <div class="kv"><div class="k">Total PIPE checks</div><div class="v">${s.total}</div></div>
+     </div>
+     <div class="toolbar">
+       <select id="thksev"><option value="all">all</option><option value="under">under-thickness</option><option value="ok">ok</option></select>
+       <button id="thk-csv" class="sec">Export CSV</button><span class="count">${rows.length} rows</span>
+     </div>
+     <table><thead><tr><th>Class</th><th>Size</th><th>Sch</th><th>Material</th><th>OD</th><th>Actual wall</th><th>Required</th><th>Margin</th><th>Status</th><th>Remark</th></tr></thead>
+     <tbody>${rows.map(r=>`<tr>
+       <td>${esc(r.class)}</td><td>${esc(r.size)}</td><td>${esc(r.schedule||'-')}</td>
+       <td>${esc((r.material||'')+' '+(r.grade||''))}</td><td>${r.OD_mm??''}</td><td>${r.actual_wall_mm??''}</td>
+       <td>${r.required_mm??''}</td><td>${r.margin_mm??''}</td>
+       <td class="${r.status==='UNDER-THICKNESS'?'sev-error':(r.status==='OK'?'':'sev-warning')}">${r.status}</td>
+       <td class="muted">${esc(r.remark||'')}</td></tr>`).join('')}</tbody></table>`;
+  }
+  m.innerHTML=out;
+  $('#t-calc').onclick=()=>{
+    const num=id=>parseFloat($(id).value)||0;
+    const Y=window.PMSThickness.yCoefficient($('#t-fam').value,num('#t-T'));
+    const r=window.PMSThickness.requiredThickness(num('#t-P'),num('#t-D'),num('#t-S'),{E:num('#t-E'),W:num('#t-W'),Y:Y,c_mm:num('#t-c')});
+    $('#t-res').innerHTML=`Y=${Y} · pressure design t=<b>${r.t} mm</b> · t+c=<b>${r.tm} mm</b> · nominal to order T=<b>${r.T} mm</b>`;
+  };
+  $('#t-run').onclick=()=>{THK=window.PMSThickness.checkPMS(DATA,SCHED,MATDB,{});renderThickness();};
+  if($('#thksev'))$('#thksev').onchange=e=>{thkFilter=e.target.value;renderThickness();};
+  if($('#thk-csv'))$('#thk-csv').onclick=()=>{
+    const H=['Class','Size','Schedule','Material','Grade','OD_mm','Actual_wall_mm','Required_mm','Margin_mm','Status','Remark'];
+    const K=['class','size','schedule','material','grade','OD_mm','actual_wall_mm','required_mm','margin_mm','status','remark'];
+    const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+    const lines=[H.join(',')].concat(THK.rows.map(r=>K.map(k=>q(r[k])).join(',')));
+    dl('b31.3_schedule_check.csv','﻿'+lines.join('\r\n'),'text/csv');
   };
 }
 

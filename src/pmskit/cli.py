@@ -21,6 +21,8 @@ from .report import coverage_report, format_report
 from .validate import validate, summarize
 from .compare import compare
 from .deviation_export import to_deviation_xlsx
+from .thickness import required_thickness, y_coefficient
+from .compliance import check_pms
 
 
 def _load(path):
@@ -98,6 +100,39 @@ def cmd_deviation(a):
     return 0
 
 
+def cmd_thickness(a):
+    Y = a.Y if a.Y is not None else y_coefficient(a.family, a.temp)
+    r = required_thickness(a.pressure, a.od, a.stress, E=a.E, W=a.W, Y=Y,
+                           c_mm=a.allowance, mill_tol=a.mill_tol)
+    print(f"ASME B31.3 304.1.2  |  P={a.pressure} barg  D={a.od} mm  S={a.stress} MPa  "
+          f"E={a.E} W={a.W} Y={Y}  c={a.allowance} mm  mill_tol={a.mill_tol}")
+    print(f"  pressure design thickness t   = {r['t_pressure_design_mm']} mm")
+    print(f"  + allowances (t + c)          = {r['t_min_with_allowances_mm']} mm")
+    print(f"  nominal wall to order (T)     = {r['T_nominal_to_order_mm']} mm")
+    return 0
+
+
+def cmd_check(a):
+    data = _load(a.input)
+    res = check_pms(data, datapack=a.datapack, E=a.E, W=a.W, mill_tol=a.mill_tol)
+    s = res["summary"]
+    if s.get("synthetic_stress"):
+        print("WARNING: using SYNTHETIC demo allowable-stress values "
+              f"({s.get('materials_source')}). Provide datapacks/materials.json for real results.\n")
+    for r in res["rows"]:
+        if a.only_flagged and r["status"] not in ("UNDER-THICKNESS",):
+            continue
+        print(f"[{r['status']:15}] {r['class']:10} {str(r['size']):6} {str(r['schedule'] or '-'):6} "
+              f"req={r['required_mm']} act={r['actual_wall_mm']} margin={r['margin_mm']}")
+    print(f"\nB31.3 schedule check: {s['ok']} OK, {s['under']} UNDER-THICKNESS, {s['not_evaluated']} not-evaluated "
+          f"(of {s['total']})")
+    if a.json_out:
+        with open(a.json_out, "w", encoding="utf-8") as fp:
+            json.dump(res, fp, ensure_ascii=False, indent=1)
+        print(f"JSON -> {a.json_out}")
+    return 1 if s["under"] else 0
+
+
 def build_parser():
     p = argparse.ArgumentParser(prog="pmskit", description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -133,6 +168,27 @@ def build_parser():
     sd.add_argument("--include-equal", action="store_true", help="Include equivalent rows")
     sd.add_argument("--meta", nargs="*", help="Project metadata k=v (project, doc_no, rev, date, title)")
     sd.set_defaults(func=cmd_deviation)
+
+    st = sub.add_parser("thickness", help="ASME B31.3 pressure-design wall thickness (single calc)")
+    st.add_argument("--pressure", type=float, required=True, help="internal design pressure, barg")
+    st.add_argument("--od", type=float, required=True, help="pipe outside diameter, mm")
+    st.add_argument("--stress", type=float, required=True, help="allowable stress S at design temp, MPa")
+    st.add_argument("--temp", type=float, default=38, help="design temperature, C (for Y)")
+    st.add_argument("--family", default="ferritic", help="ferritic|austenitic (for Y)")
+    st.add_argument("--E", type=float, default=1.0); st.add_argument("--W", type=float, default=1.0)
+    st.add_argument("--Y", type=float, default=None, help="override Y coefficient")
+    st.add_argument("--allowance", type=float, default=0.0, help="mechanical allowances c, mm")
+    st.add_argument("--mill-tol", dest="mill_tol", type=float, default=0.125)
+    st.set_defaults(func=cmd_thickness)
+
+    sc = sub.add_parser("check", help="B31.3 schedule-adequacy check over a pms.json (needs material datapack)")
+    sc.add_argument("input")
+    sc.add_argument("--datapack", default=None, help="path to materials datapack json")
+    sc.add_argument("--E", type=float, default=1.0); sc.add_argument("--W", type=float, default=1.0)
+    sc.add_argument("--mill-tol", dest="mill_tol", type=float, default=0.125)
+    sc.add_argument("--only-flagged", action="store_true", help="show only UNDER-THICKNESS rows")
+    sc.add_argument("--json-out", default=None)
+    sc.set_defaults(func=cmd_check)
     return p
 
 

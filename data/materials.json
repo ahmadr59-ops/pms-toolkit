@@ -1,4 +1,8 @@
 {
-  "meta": {"note": "Public skeleton. Standard allowable-stress tables (copyrighted) are NOT included here. Place a private datapack at datapacks/materials.json (gitignored) to enable thickness/compliance features.", "schema": "material-master v0"},
+  "meta": {
+    "schema": "material-master v1",
+    "note": "PUBLIC SKELETON — contains NO allowable-stress values. ASME B31.3 Table A-1 allowable stresses are copyrighted and must NOT be committed here. Provide them locally via datapacks/materials.json (git-ignored). See docs/datapacks.md.",
+    "stress_units": "MPa", "temp_units": "C"
+  },
   "materials": []
 }

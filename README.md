@@ -3,15 +3,15 @@
 [![CI](https://github.com/ahmadr59-ops/pms-toolkit/actions/workflows/ci.yml/badge.svg)](https://github.com/ahmadr59-ops/pms-toolkit/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 
-**Parse, validate and explore Piping Material Specifications (PMS) as open JSON.**
+**Parse, validate, compare and explore Piping Material Specifications (PMS) as open JSON.**
 
 🔗 **Live dashboard demo:** https://ahmadr59-ops.github.io/pms-toolkit/ (synthetic sample data)
 
-A PMS is the document that tells piping engineers which material, standard, schedule
-and rating to use for every component in every pipe class. They are usually large,
-table-heavy Word or Excel documents that are painful to search or reuse. `pms-toolkit`
-turns a PMS into a clean, queryable **[Open PMS Schema](schema/README.md)** JSON — plus a
-CLI, a rule-based validator, and a zero-dependency web dashboard.
+A PMS tells piping engineers which material, standard, schedule and rating to use for
+every component in every pipe class. They are usually large, table-heavy Word or Excel
+documents that are painful to search or reuse. `pms-toolkit` turns a PMS into a clean,
+queryable **[Open PMS Schema](schema/README.md)** JSON — plus a CLI, a rule-based
+validator, a Reference-vs-Contractor deviation engine, and a zero-dependency web dashboard.
 
 > ⚠️ **Data notice.** A company's PMS is normally its proprietary/copyrighted document.
 > This repository ships **only synthetic sample data**. Generate JSON from your own PMS
@@ -24,10 +24,11 @@ CLI, a rule-based validator, and a zero-dependency web dashboard.
 - **Validator** — consistency checks against standard engineering *conventions*
   (flange classes, facings, schedules, P–T monotonicity). **No copyrighted ASME/API
   tables are used or reproduced.**
-- **Deviation list** — compare a Reference (baseline) PMS vs a Contractor PMS and produce a standard, consultant-style deviation list (Excel).
+- **Deviation list** — compare a Reference (baseline) PMS vs a Contractor PMS and
+  produce a standard, consultant-style deviation list (Excel).
 - **Exports** — JSON / CSV / XLSX.
-- **Dashboard** (`web/`) — Overview, Explorer, Validate, Schema/JSON, Export, drag-drop Import.
-  Static; deployable free to GitHub Pages.
+- **Dashboard** (`web/`) — Overview, Explorer, Validate, Deviation, Schema/JSON, Export,
+  drag-drop Import. Static; deployable free to GitHub Pages.
 
 ## Supported PMS sources (adapters)
 
@@ -58,8 +59,7 @@ pmskit validate pms.json
 # 3) Export
 pmskit export pms.json --csv pms.csv --xlsx pms.xlsx
 
-# Other
-# Compare Reference (baseline) vs Contractor -> standard deviation list
+# 4) Compare Reference (baseline) vs Contractor -> standard deviation list
 pmskit deviation reference.json contractor.json --xlsx deviation.xlsx \
         --meta project="My Project" doc_no=PMS-DEV-001 rev=A
 
@@ -79,4 +79,34 @@ The dashboard is a static site in `web/`. Two ways to use it:
 ## How it works
 
 ```
-company .doc/.xls → adapter → pms.json (schema) → valida
+company .doc/.xls -> adapter -> pms.json (schema) -> validate / compare / export / dashboard
+```
+
+See [`docs/architecture.md`](docs/architecture.md) and, to support a new company,
+[`docs/adapters.md`](docs/adapters.md).
+
+## Extraction quality & honest limitations
+
+- Descriptions are **verbatim**; missing values are `null`, never guessed.
+- Some source tables use merged/double-column layouts; where a clean structured value
+  can't be guaranteed, `size_raw` preserves the original tokens.
+- The deviation engine pairs classes by code and components by part + size overlap;
+  when reference and contractor split size ranges differently, pairing is best-effort.
+- This is a productivity/lookup aid, **not a controlled engineering document** —
+  verify against the official issued PMS before design, MTO or procurement.
+
+## Publish to GitHub
+
+```bash
+cd pms-toolkit
+git init && git add . && git commit -m "Release: pms-toolkit v0.3.0"
+git branch -M main
+git remote add origin https://github.com/ahmadr59-ops/pms-toolkit.git
+git push -u origin main
+```
+
+Then in the repo: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+
+## License
+
+[Apache-2.0](LICENSE).

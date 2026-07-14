@@ -1,0 +1,4 @@
+{
+  "meta": {"note": "Public skeleton for NPS wall-thickness dimensions (ASME B36.10M/B36.19M). Populate locally.", "schema": "schedule-dim v0"},
+  "schedules": []
+}

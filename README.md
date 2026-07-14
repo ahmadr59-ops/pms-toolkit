@@ -24,6 +24,7 @@ CLI, a rule-based validator, and a zero-dependency web dashboard.
 - **Validator** — consistency checks against standard engineering *conventions*
   (flange classes, facings, schedules, P–T monotonicity). **No copyrighted ASME/API
   tables are used or reproduced.**
+- **Deviation list** — compare a Reference (baseline) PMS vs a Contractor PMS and produce a standard, consultant-style deviation list (Excel).
 - **Exports** — JSON / CSV / XLSX.
 - **Dashboard** (`web/`) — Overview, Explorer, Validate, Schema/JSON, Export, drag-drop Import.
   Static; deployable free to GitHub Pages.
@@ -58,6 +59,10 @@ pmskit validate pms.json
 pmskit export pms.json --csv pms.csv --xlsx pms.xlsx
 
 # Other
+# Compare Reference (baseline) vs Contractor -> standard deviation list
+pmskit deviation reference.json contractor.json --xlsx deviation.xlsx \
+        --meta project="My Project" doc_no=PMS-DEV-001 rev=A
+
 pmskit report pms.json      # coverage / confidence
 pmskit adapters             # list available company adapters
 ```

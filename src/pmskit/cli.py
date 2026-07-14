@@ -19,6 +19,8 @@ from .adapters import get_adapter, list_adapters
 from .export import to_json, to_csv, to_xlsx
 from .report import coverage_report, format_report
 from .validate import validate, summarize
+from .compare import compare
+from .deviation_export import to_deviation_xlsx
 
 
 def _load(path):
@@ -74,6 +76,28 @@ def cmd_adapters(a):
     return 0
 
 
+def cmd_deviation(a):
+    ref = _load(a.reference)
+    con = _load(a.contractor)
+    result = compare(ref, con, include_equal=a.include_equal)
+    s = result["summary"]
+    print(f"Baseline (reference): {result['meta']['reference']}  |  Contractor: {result['meta']['contractor']}")
+    print(f"{s['total']} deviations: {s['major']} major, {s['minor']} minor, {s['info']} info "
+          f"(Added {s['added']}, Removed {s['removed']}, Changed {s['changed']})")
+    if a.xlsx:
+        project = {}
+        for kv in (a.meta or []):
+            if "=" in kv:
+                k, v = kv.split("=", 1); project[k] = v
+        to_deviation_xlsx(result, a.xlsx, project)
+        print(f"Deviation list -> {a.xlsx}")
+    if a.json_out:
+        with open(a.json_out, "w", encoding="utf-8") as fp:
+            json.dump(result, fp, ensure_ascii=False, indent=1)
+        print(f"JSON -> {a.json_out}")
+    return 0
+
+
 def build_parser():
     p = argparse.ArgumentParser(prog="pmskit", description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -100,6 +124,15 @@ def build_parser():
 
     sa = sub.add_parser("adapters", help="List available company adapters")
     sa.set_defaults(func=cmd_adapters)
+
+    sd = sub.add_parser("deviation", help="Compare Reference vs Contractor PMS -> deviation list")
+    sd.add_argument("reference", help="Reference (baseline) pms.json")
+    sd.add_argument("contractor", help="Contractor pms.json")
+    sd.add_argument("--xlsx", help="Write standard Deviation List .xlsx")
+    sd.add_argument("--json-out", help="Write raw deviation result .json")
+    sd.add_argument("--include-equal", action="store_true", help="Include equivalent rows")
+    sd.add_argument("--meta", nargs="*", help="Project metadata k=v (project, doc_no, rev, date, title)")
+    sd.set_defaults(func=cmd_deviation)
     return p
 
 

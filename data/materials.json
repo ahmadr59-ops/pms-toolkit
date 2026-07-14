@@ -1,0 +1,4 @@
+{
+  "meta": {"note": "Public skeleton. Standard allowable-stress tables (copyrighted) are NOT included here. Place a private datapack at datapacks/materials.json (gitignored) to enable thickness/compliance features.", "schema": "material-master v0"},
+  "materials": []
+}

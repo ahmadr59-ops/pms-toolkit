@@ -37,6 +37,7 @@ $$('.tab').forEach(t=>t.onclick=()=>{
   $$('.view').forEach(x=>x.classList.remove('active'));
   t.classList.add('active'); $('#'+t.dataset.v).classList.add('active');
   if(t.dataset.v==='schema') renderSchema();
+  if(t.dataset.v==='deviation') renderDeviation();
 });
 
 // ---------- overview ----------
@@ -218,6 +219,71 @@ function wireDrop(el){if(!el)return;
   el.ondragover=e=>{e.preventDefault();el.classList.add('hover');};
   el.ondragleave=()=>el.classList.remove('hover');
   el.ondrop=e=>{e.preventDefault();el.classList.remove('hover');if(e.dataTransfer.files[0])loadFile(e.dataTransfer.files[0]);};
+}
+
+// ---------- Deviation (Reference baseline vs Contractor) ----------
+let REF=null, CON=null, DEV=null, devSevFilter='all';
+function loadInto(which,file){const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);
+  if(which==='ref')REF=d;else CON=d;renderDeviation();}catch(e){alert('Invalid JSON: '+e.message);}};r.readAsText(file);}
+function slot(which,data){
+  const name=data?((data.meta&&data.meta.company||'loaded')+' · '+((data.classes||[]).length)+' classes'):'not loaded';
+  const isRef=which==='ref';
+  return `<div class="kv" style="border-left:3px solid ${isRef?'var(--acc2)':'var(--acc)'}">
+     <div class="k">${isRef?'① Reference (baseline)':'② Contractor (detail design)'}</div>
+     <div class="v" style="font-size:14px">${esc(name)}</div>
+     <div style="margin-top:8px;display:flex;gap:6px">
+       <label class="sec" style="padding:5px 9px;border-radius:7px;cursor:pointer;border:1px solid var(--edge);font-size:12px">
+         Import…<input type="file" accept=".json,application/json" hidden onchange="_devPick('${which}',this)"></label>
+       ${data?`<button class="sec" style="font-size:12px" onclick="_devClear('${which}')">Clear</button>`:''}
+     </div></div>`;
+}
+window._devPick=(w,el)=>{if(el.files[0])loadInto(w,el.files[0]);};
+window._devClear=(w)=>{if(w==='ref')REF=null;else CON=null;DEV=null;renderDeviation();};
+
+function renderDeviation(){
+  const m=$('#deviation');
+  let head=`<h2 style="margin-top:0">Deviation List</h2>
+    <div class="sub">Baseline rule: the <b style="color:var(--acc2)">Reference</b> PMS is the standard; the <b style="color:var(--acc)">Contractor</b> PMS is evaluated against it.</div>
+    <div class="cards">${slot('ref',REF)}${slot('con',CON)}
+      <div class="kv"><div class="k">Action</div>
+        <button id="gen" ${REF&&CON?'':'disabled style="opacity:.5;cursor:not-allowed"'} style="margin-top:6px">Generate Deviation</button>
+        <div class="muted" style="font-size:11px;margin-top:6px">${REF&&CON?'Ready.':'Load both PMS files.'}</div>
+      </div></div>`;
+  if(!DEV){ m.innerHTML=head+`<div class="drop">Import a <b>Reference</b> and a <b>Contractor</b> <code>pms.json</code> above, then Generate.
+     Tip: generate each with <code>pmskit parse … -o pms.json</code>.</div>`;
+     const g=$('#gen'); if(g)g.onclick=()=>{DEV=window.PMSCompare.compare(REF,CON,false);renderDeviation();};
+     return; }
+  const s=DEV.summary;
+  const rows=DEV.rows.filter(r=>devSevFilter==='all'||r.severity===devSevFilter);
+  head+=`<div class="cards">
+     <div class="kv"><div class="k">Total</div><div class="v">${s.total}</div></div>
+     <div class="kv"><div class="k">Major</div><div class="v sev-error">${s.major}</div></div>
+     <div class="kv"><div class="k">Minor</div><div class="v sev-warning">${s.minor}</div></div>
+     <div class="kv"><div class="k">Added / Removed / Changed</div><div class="v" style="font-size:15px">${s.added} / ${s.removed} / ${s.changed}</div></div>
+   </div>
+   <div class="toolbar">
+     <select id="devsev">${['all','major','minor','info'].map(v=>`<option value="${v}"${v===devSevFilter?' selected':''}>${v}</option>`).join('')}</select>
+     <button id="dev-csv" class="sec">Export CSV (Excel)</button>
+     <span class="count">${rows.length} rows</span>
+   </div>
+   <table><thead><tr>
+     <th>Item</th><th>Class</th><th>Component</th><th>Size</th><th>Reference (baseline)</th>
+     <th>Contractor</th><th>Deviation</th><th>Severity</th><th>Std Ref</th><th>Consultant Remark</th>
+   </tr></thead><tbody>${rows.map(r=>`<tr>
+     <td>${r.item}</td><td>${esc(r.class)}</td><td>${esc(r.component)}</td><td>${esc(r.size)}</td>
+     <td class="desc">${esc(r.reference)}</td><td class="desc">${esc(r.contractor)}</td>
+     <td>${esc(r.deviation)}</td><td class="sev-${r.severity}">${r.severity.toUpperCase()}</td>
+     <td class="muted">${esc(r.std_ref)}</td><td>${esc(r.remark)}</td></tr>`).join('')}</tbody></table>`;
+  m.innerHTML=head;
+  $('#gen').onclick=()=>{DEV=window.PMSCompare.compare(REF,CON,false);renderDeviation();};
+  $('#devsev').onchange=e=>{devSevFilter=e.target.value;renderDeviation();};
+  $('#dev-csv').onclick=()=>{
+    const H=['Item','Class','Component','Size','Reference','Contractor','Deviation','Severity','Std Ref','Consultant Remark'];
+    const K=['item','class','component','size','reference','contractor','deviation','severity','std_ref','remark'];
+    const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+    const lines=[H.join(',')].concat(DEV.rows.map(r=>K.map(k=>q(r[k])).join(',')));
+    dl('deviation_list.csv','﻿'+lines.join('\r\n'),'text/csv');
+  };
 }
 
 boot();

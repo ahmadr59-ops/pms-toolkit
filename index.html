@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PMS Toolkit — Dashboard</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <h1>PMS&nbsp;Toolkit</h1>
+  <span class="badge" id="b-company">—</span>
+  <span class="badge" id="b-classes">—</span>
+  <span class="badge" id="b-comps">—</span>
+  <div class="grow"></div>
+  <input id="global" type="text" placeholder="Search all components…" style="width:300px">
+  <label class="sec" style="padding:6px 11px;border-radius:8px;cursor:pointer;border:1px solid var(--edge)">
+    Import JSON<input id="file" type="file" accept="application/json,.json" hidden>
+  </label>
+</header>
+
+<nav class="tabs">
+  <div class="tab active" data-v="overview">Overview</div>
+  <div class="tab" data-v="explorer">Explorer</div>
+  <div class="tab" data-v="validate">Validate</div>
+  <div class="tab" data-v="deviation">Deviation</div>
+  <div class="tab" data-v="schema">Schema / JSON</div>
+  <div class="tab" data-v="export">Export</div>
+</nav>
+
+<section id="overview" class="view active"></section>
+
+<section id="explorer" class="view">
+  <div class="wrap">
+    <aside class="side">
+      <div class="s-search"><input id="cl-search" type="text" placeholder="Filter classes / service / material…"></div>
+      <div id="cl-list"></div>
+    </aside>
+    <div class="main" id="cl-main"></div>
+  </div>
+</section>
+
+<section id="validate" class="view"></section>
+<section id="deviation" class="view"></section>
+<section id="schema" class="view"></section>
+<section id="export" class="view"></section>
+
+<script src="compare.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

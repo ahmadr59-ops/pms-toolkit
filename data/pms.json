@@ -1,0 +1,66 @@
+{
+ "meta": {
+  "source_file": "SAMPLE_PMS (synthetic)",
+  "company": "SAMPLE",
+  "class_count": 3,
+  "generator": "pms-toolkit",
+  "note": "Synthetic demo data for illustration only. Not derived from any company's proprietary PMS.",
+  "units": {"temperature": "C", "pressure": "barg", "size": "NPS (inch)"}
+ },
+ "classes": [
+  {
+   "class": "CS150",
+   "service": "GENERAL HYDROCARBON, UTILITY WATER",
+   "main_material": "CS",
+   "corrosion_allowance": "3.0 MM",
+   "flange_rating_face": "CL.150 RF",
+   "temp_C": ["-29", "38", "100", "200", "300", "400"],
+   "press_barg": ["19.6", "19.6", "17.7", "15.3", "13.0", "10.2"],
+   "particular_notes": "Illustrative class for demo purposes only.",
+   "components": [
+    {"part": "PIPE", "symbol": "(P)", "size_from": "1/2", "size_to": "1-1/2", "size_raw": ["1/2","1-1/2"], "description": "ASTM A106 GR.B SMLS PE PER ASME B36.10 SCH80", "notes": []},
+    {"part": "PIPE", "symbol": "(P)", "size_from": "2", "size_to": "24", "size_raw": ["2","24"], "description": "ASTM A106 GR.B SMLS BE PER ASME B36.10 SCH40", "notes": []},
+    {"part": "90 ELBOW", "symbol": "(9L)", "size_from": "2", "size_to": "24", "size_raw": ["2","24"], "description": "ASTM A234 GR.WPB SMLS LONG RADIUS BW PER ASME B16.9 SCH40", "notes": []},
+    {"part": "GATE VALVE", "symbol": "(V)", "size_from": "2", "size_to": "24", "size_raw": ["2","24"], "description": "ASTM A216 GR.WCB TRIM:13CR CL150 FLANGED RF API600 BB-OS&Y", "notes": []},
+    {"part": "GASKET", "symbol": "(G)", "size_from": "1/2", "size_to": "24", "size_raw": ["1/2","24"], "description": "SPIRAL WOUND SS316/GRAPHITE WITH CS CENTERING RING ASME B16.20 CL150 RF", "notes": []},
+    {"part": "BOLT & NUT", "symbol": "(B)", "size_from": "1/2", "size_to": "24", "size_raw": ["1/2","24"], "description": "ASTM A193 GR.B7 / A194 GR.2H STUD BOLT WITH 2 HEAVY HEX NUTS", "notes": []}
+   ],
+   "component_count": 6
+  },
+  {
+   "class": "CS300",
+   "service": "HYDROCARBON, HP STEAM CONDENSATE",
+   "main_material": "CS",
+   "corrosion_allowance": "3.0 MM",
+   "flange_rating_face": "CL.300 RF",
+   "temp_C": ["-29", "38", "200", "400"],
+   "press_barg": ["51.1", "51.1", "43.8", "34.7"],
+   "particular_notes": null,
+   "components": [
+    {"part": "PIPE", "symbol": "(P)", "size_from": "1/2", "size_to": "1-1/2", "size_raw": ["1/2","1-1/2"], "description": "ASTM A106 GR.B SMLS PE PER ASME B36.10 SCH160", "notes": []},
+    {"part": "PIPE", "symbol": "(P)", "size_from": "2", "size_to": "12", "size_raw": ["2","12"], "description": "ASTM A106 GR.B SMLS BE PER ASME B36.10 SCH80", "notes": []},
+    {"part": "WN FLANGE", "symbol": "(FW)", "size_from": "1/2", "size_to": "12", "size_raw": ["1/2","12"], "description": "ASTM A105 CL300 RF WELD NECK FLANGE PER ASME B16.5", "notes": []},
+    {"part": "GATE VALVE", "symbol": "(V)", "size_from": "2", "size_to": "12", "size_raw": ["2","12"], "description": "ASTM A216 GR.WCB TRIM:13CR CL300 FLANGED RF API600 BB-OS&Y", "notes": []},
+    {"part": "GASKET", "symbol": "(G)", "size_from": "1/2", "size_to": "12", "size_raw": ["1/2","12"], "description": "SPIRAL WOUND SS316/GRAPHITE ASME B16.20 CL300 RF", "notes": []}
+   ],
+   "component_count": 5
+  },
+  {
+   "class": "SS150",
+   "service": "DILUTE ACID, CHEMICAL",
+   "main_material": "SS316",
+   "corrosion_allowance": "0.0 MM",
+   "flange_rating_face": "CL.150 RF",
+   "temp_C": ["-29", "38", "200", "400"],
+   "press_barg": ["15.9", "15.9", "12.1", "10.0"],
+   "particular_notes": null,
+   "components": [
+    {"part": "PIPE", "symbol": "(P)", "size_from": "1/2", "size_to": "12", "size_raw": ["1/2","12"], "description": "ASTM A312 TP316 SMLS BE PER ASME B36.19 SCH10S", "notes": []},
+    {"part": "90 ELBOW", "symbol": "(9L)", "size_from": "1/2", "size_to": "12", "size_raw": ["1/2","12"], "description": "ASTM A403 WP316 SMLS LONG RADIUS BW PER ASME B16.9 SCH10S", "notes": []},
+    {"part": "BALL VALVE", "symbol": "(BV)", "size_from": "1/2", "size_to": "8", "size_raw": ["1/2","8"], "description": "ASTM A351 GR.CF8M FLOATING BALL RF FLANGED CL150 API608", "notes": []},
+    {"part": "GASKET", "symbol": "(G)", "size_from": "1/2", "size_to": "12", "size_raw": ["1/2","12"], "description": "PTFE ENVELOPE WITH SS316 SPIRAL WOUND CL150 RF", "notes": []}
+   ],
+   "component_count": 4
+  }
+ ]
+}

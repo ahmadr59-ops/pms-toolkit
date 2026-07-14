@@ -9,9 +9,9 @@
 
 A PMS is the document that tells piping engineers which material, standard, schedule
 and rating to use for every component in every pipe class. They are usually large,
-table-heavy Word documents that are painful to search or reuse. `pms-toolkit` turns a
-PMS into a clean, queryable **[Open PMS Schema](schema/README.md)** JSON — plus a CLI,
-a rule-based validator, and a zero-dependency web dashboard.
+table-heavy Word or Excel documents that are painful to search or reuse. `pms-toolkit`
+turns a PMS into a clean, queryable **[Open PMS Schema](schema/README.md)** JSON — plus a
+CLI, a rule-based validator, and a zero-dependency web dashboard.
 
 > ⚠️ **Data notice.** A company's PMS is normally its proprietary/copyrighted document.
 > This repository ships **only synthetic sample data**. Generate JSON from your own PMS
@@ -19,8 +19,8 @@ a rule-based validator, and a zero-dependency web dashboard.
 
 ## Features
 
-- **Fast `.doc` parsing** — reads the binary Word OLE stream directly (no Word/LibreOffice).
-- **Open schema** — one company-neutral JSON shape; company quirks live in *adapters*.
+- **Multiple source formats** — binary Word `.doc` and Excel `.xls`, via pluggable *adapters*.
+- **Open schema** — one company-neutral JSON shape; company quirks live in adapters.
 - **Validator** — consistency checks against standard engineering *conventions*
   (flange classes, facings, schedules, P–T monotonicity). **No copyrighted ASME/API
   tables are used or reproduced.**
@@ -28,10 +28,20 @@ a rule-based validator, and a zero-dependency web dashboard.
 - **Dashboard** (`web/`) — Overview, Explorer, Validate, Schema/JSON, Export, drag-drop Import.
   Static; deployable free to GitHub Pages.
 
+## Supported PMS sources (adapters)
+
+| Adapter | Company | Input |
+|---------|---------|-------|
+| `nioec` | NIOEC | Word binary `.doc` |
+| `borc`  | BORC (Bandar Abbas Refinery) | Excel `.xls` |
+
+Each company's layout lives in its own adapter; add a new one by following
+[`docs/adapters.md`](docs/adapters.md). List them anytime with `pmskit adapters`.
+
 ## Install
 
 ```bash
-pip install -e .          # or: pip install -e ".[dev,xlsx]"
+pip install -e ".[xls,xlsx]"     # xls = read .xls (BORC), xlsx = write .xlsx
 ```
 
 ## CLI
@@ -39,6 +49,7 @@ pip install -e .          # or: pip install -e ".[dev,xlsx]"
 ```bash
 # 1) Parse your PMS document into canonical JSON
 pmskit parse "YourCompany PMS.doc" --adapter nioec --company YourCo -o pms.json
+pmskit parse "BORC PMS.xls"        --adapter borc  --company BORC   -o borc.json
 
 # 2) Check consistency
 pmskit validate pms.json
@@ -63,15 +74,4 @@ The dashboard is a static site in `web/`. Two ways to use it:
 ## How it works
 
 ```
-company .doc → doc_parser (OLE) → adapter → pms.json (schema) → validate / export / dashboard
-```
-
-See [`docs/architecture.md`](docs/architecture.md) and, to support a new company,
-[`docs/adapters.md`](docs/adapters.md).
-
-## Extraction quality & honest limitations
-
-- Descriptions are **verbatim**; missing values are `null`, never guessed.
-- Some source tables use a merged **double-column** layout; for those rows,
-  `size_from`/`size_to` may combine two sub-ranges — `size_raw` keeps the originals.
-- Master P�
+company .doc/.xls → adapter → pms.json (schema) → valida

@@ -3,8 +3,9 @@
 from __future__ import annotations
 from .base import PMSAdapter
 from .nioec import NIOECAdapter
+from .borc import BORCAdapter
 
-_ADAPTERS = {a.name: a for a in [NIOECAdapter]}
+_ADAPTERS = {a.name: a for a in [NIOECAdapter, BORCAdapter]}
 
 
 def list_adapters():

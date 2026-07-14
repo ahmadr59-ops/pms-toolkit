@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.0
+- Add `borc` adapter: parse BORC (Bandar Abbas Refinery) Excel (.xls) PMS.
+- Header extraction tolerant of merged-cell column drift.
+- `xls` optional dependency (xlrd).
+
 ## 0.1.0
 - Initial release.
 - `doc_parser`: direct OLE `.doc` piece-table text extraction.

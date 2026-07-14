@@ -23,6 +23,7 @@ from .compare import compare
 from .deviation_export import to_deviation_xlsx
 from .thickness import required_thickness, y_coefficient
 from .compliance import check_pms
+from .specbuilder import build_spec
 
 
 def _load(path):
@@ -133,6 +134,26 @@ def cmd_check(a):
     return 1 if s["under"] else 0
 
 
+def cmd_build_spec(a):
+    out = build_spec(class_name=a.name, material_spec=a.material, grade=a.grade,
+                     service=a.service, flange_rating_face=a.flange,
+                     corrosion_allowance=a.ca, temp_C=a.temp, press_barg=a.press,
+                     size_from=a.size_from, size_to=a.size_to, end=a.end,
+                     datapack=a.datapack, E=a.E, W=a.W, mill_tol=a.mill_tol,
+                     company=a.company)
+    c = out["classes"][0]
+    if out["meta"].get("synthetic_stress"):
+        print("WARNING: SYNTHETIC demo stresses used. Provide a real datapack for engineering use.\n")
+    print(f"Class {c['class']}  ({c['main_material']}, {c['flange_rating_face']})")
+    for x in c["components"]:
+        print(f"  {x['size_from']:>5} - {x['size_to']:<5}  {x['description']}")
+    if a.output:
+        with open(a.output, "w", encoding="utf-8") as f:
+            json.dump(out, f, ensure_ascii=False, indent=1)
+        print(f"\nJSON -> {a.output}")
+    return 0
+
+
 def build_parser():
     p = argparse.ArgumentParser(prog="pmskit", description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -189,6 +210,25 @@ def build_parser():
     sc.add_argument("--only-flagged", action="store_true", help="show only UNDER-THICKNESS rows")
     sc.add_argument("--json-out", default=None)
     sc.set_defaults(func=cmd_check)
+
+    sb = sub.add_parser("build-spec", help="Propose a pipe class from design conditions (B31.3)")
+    sb.add_argument("--name", required=True, help="new class code, e.g. A1B1")
+    sb.add_argument("--material", required=True, help="material spec, e.g. 'ASTM A106'")
+    sb.add_argument("--grade", default=None)
+    sb.add_argument("--service", default="")
+    sb.add_argument("--flange", required=True, help="flange rating & face, e.g. 'CL.150 RF'")
+    sb.add_argument("--ca", default="0 MM", help="corrosion allowance, e.g. '3.0 MM'")
+    sb.add_argument("--temp", nargs="+", required=True, help="design temperatures (C)")
+    sb.add_argument("--press", nargs="+", required=True, help="allowable pressures (barg), same order")
+    sb.add_argument("--size-from", dest="size_from", required=True)
+    sb.add_argument("--size-to", dest="size_to", required=True)
+    sb.add_argument("--end", default="BE")
+    sb.add_argument("--datapack", default=None)
+    sb.add_argument("--E", type=float, default=1.0); sb.add_argument("--W", type=float, default=1.0)
+    sb.add_argument("--mill-tol", dest="mill_tol", type=float, default=0.125)
+    sb.add_argument("--company", default="SPEC-BUILDER")
+    sb.add_argument("-o", "--output", default=None)
+    sb.set_defaults(func=cmd_build_spec)
     return p
 
 

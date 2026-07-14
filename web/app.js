@@ -39,6 +39,7 @@ $$('.tab').forEach(t=>t.onclick=()=>{
   if(t.dataset.v==='schema') renderSchema();
   if(t.dataset.v==='deviation') renderDeviation();
   if(t.dataset.v==='thickness') renderThickness();
+  if(t.dataset.v==='specbuilder') renderSpecBuilder();
 });
 
 // ---------- overview ----------
@@ -356,6 +357,66 @@ async function renderThickness(){
     const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
     const lines=[H.join(',')].concat(THK.rows.map(r=>K.map(k=>q(r[k])).join(',')));
     dl('b31.3_schedule_check.csv','﻿'+lines.join('\r\n'),'text/csv');
+  };
+}
+
+// ---------- Spec Builder (ASME B31.3) ----------
+let SPEC=null;
+async function renderSpecBuilder(){
+  await loadDB();
+  const m=$('#specbuilder');
+  const warn=(MATDB.meta&&MATDB.meta.SYNTHETIC)?`<div class="notebox">⚠️ Using <b>SYNTHETIC</b> demo allowable-stress values. Proposed schedules are illustrative — load a real datapack locally for engineering use.</div>`:'';
+  const mats=(MATDB.materials||[]).map(x=>`${x.spec}${x.grade?' '+x.grade:''}`);
+  let out=`<h2 style="margin-top:0">Spec Builder</h2>
+    <div class="sub">Propose a pipe class: for each size, the minimum standard schedule that satisfies ASME B31.3 at the class P-T.</div>
+    ${warn}
+    <div class="cards">
+      <div class="kv"><div class="k">Inputs</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px">
+          <label>Class code<input id="sb-name" type="text" value="A1B1"></label>
+          <label>Service<input id="sb-svc" type="text" value="HYDROCARBON"></label>
+          <label>Material<select id="sb-mat">${mats.map(x=>`<option>${esc(x)}</option>`).join('')}</select></label>
+          <label>Flange rating & face<input id="sb-flg" type="text" value="CL.150 RF"></label>
+          <label>Corrosion allow.<input id="sb-ca" type="text" value="3.0 MM"></label>
+          <label>End<input id="sb-end" type="text" value="BE"></label>
+          <label>Size from<input id="sb-sf" type="text" value="1/2"></label>
+          <label>Size to<input id="sb-st" type="text" value="24"></label>
+          <label>Temps °C (comma)<input id="sb-temp" type="text" value="38,200,400"></label>
+          <label>Press barg (comma)<input id="sb-press" type="text" value="19.6,17.9,10.2"></label>
+        </div>
+        <button id="sb-gen" style="margin-top:8px">Generate spec</button>
+      </div>
+    </div>`;
+  if(SPEC){
+    const c=SPEC.classes[0];
+    out+=`<div class="toolbar">
+       <button id="sb-json" class="sec">Download class JSON</button>
+       <button id="sb-add" class="sec">Add to loaded PMS</button>
+       <span class="count">${c.component_count} PIPE rows</span></div>
+      <h2>${esc(c.class)} — ${esc(c.main_material)} · ${esc(c.flange_rating_face)}</h2>
+      ${c.particular_notes?`<div class="notebox">${esc(c.particular_notes)}</div>`:''}
+      <table><thead><tr><th>From</th><th>To</th><th>Proposed description</th></tr></thead>
+      <tbody>${c.components.map(x=>`<tr><td>${esc(x.size_from)}</td><td>${esc(x.size_to)}</td><td class="desc">${esc(x.description)}</td></tr>`).join('')}</tbody></table>
+      <h2>Sizing detail</h2>
+      <table><thead><tr><th>NPS</th><th>OD</th><th>Required (mm)</th><th>Chosen schedule</th><th>Wall (mm)</th><th>Status</th></tr></thead>
+      <tbody>${SPEC.sizing_detail.map(d=>`<tr><td>${esc(d.nps)}</td><td>${d.OD_mm??''}</td><td>${d.required_mm?d.required_mm.toFixed(3):''}</td>
+        <td>${esc(d.schedule||'-')}</td><td>${d.wall_mm??''}</td>
+        <td class="${d.status==='OK'?'':'sev-error'}">${esc(d.status)}</td></tr>`).join('')}</tbody></table>`;
+  }
+  m.innerHTML=out;
+  $('#sb-gen').onclick=()=>{
+    const matSel=$('#sb-mat').value.split(' ');
+    SPEC=window.PMSSpec.build({sch:SCHED,mat:MATDB,name:$('#sb-name').value,
+      material_spec:matSel.slice(0,-1).join(' ')||matSel[0], grade:matSel.length>1?matSel[matSel.length-1]:null,
+      service:$('#sb-svc').value, flange:$('#sb-flg').value, ca_txt:$('#sb-ca').value,
+      temp:$('#sb-temp').value.split(',').map(x=>x.trim()), press:$('#sb-press').value.split(',').map(x=>x.trim()),
+      size_from:$('#sb-sf').value, size_to:$('#sb-st').value, end:$('#sb-end').value, E:1,W:1,mt:0.125});
+    renderSpecBuilder();
+  };
+  if($('#sb-json'))$('#sb-json').onclick=()=>dl(SPEC.classes[0].class+'_spec.json',JSON.stringify(SPEC,null,1),'application/json');
+  if($('#sb-add'))$('#sb-add').onclick=()=>{
+    const nc={...SPEC.classes[0]}; DATA.classes=(DATA.classes||[]).filter(c=>c.class!==nc.class).concat([nc]);
+    setData(DATA); alert('Class '+nc.class+' added to the loaded PMS (in memory). Use Export to save.');
   };
 }
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.0
+- Spec Builder: propose a pipe class from design conditions — minimum adequate schedule per size via ASME B31.3.
+- CLI `pmskit build-spec`; dashboard **Spec Builder** tab (form -> proposed class -> download JSON / add to loaded PMS).
+
 ## 0.4.0
 - Shared engineering database: pipe schedule dimensions (data/schedules.json) + material master.
 - ASME B31.3 wall-thickness engine (pmskit.thickness) — code method only, no copyrighted stress tables.

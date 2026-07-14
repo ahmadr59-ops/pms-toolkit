@@ -1,0 +1,85 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.org/pms.schema.json",
+  "title": "Piping Material Specification (PMS)",
+  "description": "Canonical, company-agnostic schema for a Piping Material Specification. Designed for NIOEC and adaptable to other owners/EPCs via an import adapter that maps each source into these fields.",
+  "type": "object",
+  "required": ["meta", "classes"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["company", "class_count"],
+      "properties": {
+        "source_file": { "type": "string" },
+        "company": { "type": "string", "description": "Owner/EPC that issued the PMS, e.g. NIOEC." },
+        "revision": { "type": "string" },
+        "class_count": { "type": "integer" },
+        "generator": { "type": "string" },
+        "units": {
+          "type": "object",
+          "properties": {
+            "temperature": { "type": "string", "default": "C" },
+            "pressure": { "type": "string", "default": "barg" },
+            "size": { "type": "string", "default": "NPS (inch)" }
+          }
+        }
+      }
+    },
+    "classes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["class", "components"],
+        "properties": {
+          "class": { "type": "string", "description": "Pipe class / line class code, e.g. A1A1." },
+          "service": { "type": ["string", "null"], "description": "Fluid service(s) the class covers." },
+          "main_material": { "type": ["string", "null"], "description": "Base material family, e.g. CS, 1-1/4CR-0.5MO, SS316." },
+          "corrosion_allowance": { "type": ["string", "null"], "description": "Corrosion allowance, e.g. '1.3 MM'." },
+          "flange_rating_face": { "type": ["string", "null"], "description": "Flange rating and facing, e.g. 'CL.150 RF'." },
+          "temp_C": {
+            "type": ["array", "null"],
+            "items": { "type": "string" },
+            "description": "Pressure-temperature rating table: temperature points (deg C)."
+          },
+          "press_barg": {
+            "type": ["array", "null"],
+            "items": { "type": "string" },
+            "description": "Allowable pressure (barg) matching each temp_C point, in order."
+          },
+          "particular_notes": { "type": ["string", "null"], "description": "Class-specific notes text, verbatim." },
+          "component_count": { "type": "integer" },
+          "components": {
+            "type": "array",
+            "description": "Material selection rows. Each row = a component type over a size range with a governing description (material + standard + schedule/rating/facing).",
+            "items": {
+              "type": "object",
+              "required": ["part", "description"],
+              "properties": {
+                "part": { "type": ["string", "null"], "description": "Component/part name, e.g. PIPE, 90 ELBOW, GATE VALVE, GASKET." },
+                "symbol": { "type": ["string", "null"], "description": "MTO/component symbol code, e.g. (P), (9L), (TS)." },
+                "size_from": { "type": ["string", "null"], "description": "Lower NPS bound of the size range (inch)." },
+                "size_to": { "type": ["string", "null"], "description": "Upper NPS bound of the size range (inch)." },
+                "size_raw": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Raw size cell tokens as they appear in source (preserves merged/double-column layouts)."
+                },
+                "description": { "type": "string", "description": "Verbatim material/standard description, e.g. 'ASTM A234 GR.WPB SMLS LONG RADIUS BW PER ASME B16.9 SCH40'." },
+                "notes": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Referenced note numbers, e.g. (2), (15)."
+                }
+              }
+            }
+          },
+          "branch_table": {
+            "type": ["array", "null"],
+            "description": "Optional branch-connection matrix (header/run size vs branch size -> connection type). Not populated in v1.",
+            "items": { "type": "object" }
+          }
+        }
+      }
+    }
+  }
+}

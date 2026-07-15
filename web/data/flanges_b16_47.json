@@ -22,16 +22,12 @@
   ],
   "verify_flags": [
    {
-    "group": "2.5",
-    "class": "600",
-    "at_temp_C": 500.0,
-    "note": "rated pressure increases with temperature in the source export - verify against the printed standard"
+    "item": "Group 2.5 CL600: 475C=63.7 then 500C=64.4",
+    "status": "CONFIRMED as printed in Table 21 of the standard (PDF checked); kept verbatim"
    },
    {
-    "group": "2.11",
-    "class": "300",
-    "at_temp_C": 500.0,
-    "note": "rated pressure increases with temperature in the source export - verify against the printed standard"
+    "item": "Group 2.11 CL300: 475C=33.4 then 500C=34.1",
+    "status": "CONFIRMED as printed in Table 27 of the standard (PDF checked); kept verbatim"
    }
   ]
  },
@@ -14243,7 +14239,7 @@
     }
    ],
    "notes": "Minimum | Thickness of                                                                                                           Length of | Flange, tf                                                                                                                                      Bolts, L | [Note (1)]                                                                           Drilling                                              [Notes (4), (5)] | Hub                                                                        Stud Bolts | Nominal              Weld             Length    Diam. of     Diam.     Raised    Diam.    No. of Diam.             Minimum    Raised | Pipe      O.D. of     Neck     Blind Through     Hub, X      Top, A      Face     of Bolt    Bolt of Bolt Diam. of     Fillet       Face       Ring | Size     Flange, O Flange Flange     Hub, Y [Note (2)] [Note (3)] Diam., R Circle    Holes Hole, in. Bolt, in. Radius, r1    6.4 mm      Joint | GENERAL NOTES: | (a)    Dimensions are in millimeters unless otherwise noted. | (b)    For tolerances, see section 7. | (c)    For facings, see para. 6.1. | (d)    For flange bolt holes, see para. 6.2. | (e)    For spot facing, see para. 6.3. | (f)    The bore is to be specified by the purchaser. Tolerances in para. 7.3.2 apply. | (g)    Blind flanges may be made with or without hubs at the manufacturer’s option. The manufacturer or purchaser may modify blind flanges with the following features: | (1)    a hole bored to match the ID of a slip-on flange up to NPS 3 | (2)    a socket equivalent to that provided for a socket-welding flange up to NPS 3 | (3)    an internal thread to ASME B1.20.1 up to NPS 3 | Holes can be placed anywhere within the inside diameter of the mating pipe. When multiple holes are provided, they shall be separated bya distance at least equal to that of the diameter of the | largest hole being added. | NOTES: | (1)    The minimum flange thickness does not include the raised face thickness (see para. 6.1.1). | (2)    This dimension is for the large end of hub, which may be straight or tapered. | (3)    For welding and bevel, see para. 6.4. | (4)    The length of the stud bolt does not include the height of the points (see para. 6.5.2). | (5)    Bolt lengths not shown in the table may be determined in accordance with Nonmandatory Appendix D (see para. 6.5.2).",
-   "DAMAGED_SOURCE": "Source export is corrupt for these packed size rows (values missing/untokenizable); re-export required: 50; 52; 54; 56; 58; 60"
+   "coverage_note": "NPS 26-48 only; 50-60 are printed '...' (not tabulated) in the standard - confirmed from PDF."
   },
   "B:75": {
    "source_table": "Table 37",
@@ -14696,16 +14692,142 @@
     }
    ],
    "notes": "Minimum | Length of | Thickness of | Bolts, L | Flange, tf | [Notes | [Note (1)] | Drilling                                             (4), (5)] | Stud | Hub                                                                        Bolts | Nominal               Weld             Length     Diam. of | Diam.      Raised    Diam. No. of    Diam.               Minimum    Raised | Pipe      O.D. of     Neck    Blind Through     Hub, X | Top, A        Face     of Bolt Bolt     of Bolt Diam. of     Fillet        Face | Size      Flange, O Flange Flange    Hub, Y     [Note (2)] | [Note (3)] Diam., R Circle Holes Hole, in. Bolt, in. Radius, r1    6.4 mm | GENERAL NOTES: | (a)    Dimensions are in millimeters unless otherwise noted. | (b)    For tolerances, see section 7. | (c)    For facings, see para. 6.1. | (d)    For flange bolt holes, see para. 6.2. | (e)    For spot facing, see para. 6.3. | (f)    The bore is to be specified by the purchaser. Tolerances in para. 7.3.2 apply. | (g)    Blind flanges may be made with or without hubs at the manufacturer’s option. The manufacturer or purchaser may modify blind flanges with the following features: | (1)    a hole bored to match the ID of a slip-on flange up to NPS 3 | (2)    a socket equivalent to that provided for a socket-welding flange up to NPS 3 | (3)    an internal thread to ASME B1.20.1 up to NPS 3 | Holes can be placed anywhere within the inside diameter of the mating pipe. When multiple holes are provided, they shall be separated bya distance at least equal to that of the diameter of the | largest hole being added. | (h)    Dimensions for Classes 400, 600, and 900 NPS 38 and larger for Series B flanges are the same as for the Series A flanges. | NOTES: | (1)    The minimum flange thickness does not include the raised face thickness (see para. 6.1.1). | (2)    This dimension is for the large end of hub, which may be straight or tapered. | (3)    For welding and bevel, see para. 6.4. | (4)    The length of the stud bolt does not include the height of the points (see para. 6.5.2). | (5)    Bolt lengths not shown in the table may be determined in accordance with Nonmandatory Appendix D (see para. 6.5.2).",
-   "DAMAGED_SOURCE": "Source export is corrupt for these packed size rows (values missing/untokenizable); re-export required: 38; 40; 42; 44; 46; 48; 50; 52; 54; 56; 58; 60"
+   "nps_38_and_larger": "use Series A dimensions per General Note (h); printed '...' in this table. General Note (h), verbatim: Dimensions for Classes 400, 600, and 900 NPS 38 and larger for Series B flanges are the same as for the Series A flanges.",
+   "cross_reference": "A:400"
   },
   "B:600": {
    "source_table": "Table 41",
    "series": "B",
    "class": 600,
-   "columns": [],
-   "rows": [],
+   "columns": [
+    "O.D. of Flange, O",
+    "Minimum Thickness of Flange, tf [Note (1)] Weld Neck Flange",
+    "Minimum Thickness of Flange, tf [Note (1)] Blind Flange",
+    "Length Through Hub, Y",
+    "Diam. of Hub, X [Note (2)]",
+    "Hub Diam. Top, A [Note (3)]",
+    "Raised Face Diam., R",
+    "Drilling Diam. of Bolt Circle",
+    "Drilling No. of Bolt Holes",
+    "Drilling Diam. of Bolt Hole, in.",
+    "Diam. of Bolt, in.",
+    "Minimum Fillet Radius, r1",
+    "Length of Bolts, L [Notes (4), (5)] Stud Bolts Raised Face 6.4 mm"
+   ],
+   "rows": [
+    {
+     "nps": "26",
+     "values": {
+      "O.D. of Flange, O": 889,
+      "Minimum Thickness of Flange, tf [Note (1)] Weld Neck Flange": 111.3,
+      "Minimum Thickness of Flange, tf [Note (1)] Blind Flange": 111.3,
+      "Length Through Hub, Y": 181,
+      "Diam. of Hub, X [Note (2)]": 698,
+      "Hub Diam. Top, A [Note (3)]": 660.4,
+      "Raised Face Diam., R": 727,
+      "Drilling Diam. of Bolt Circle": 806.4,
+      "Drilling No. of Bolt Holes": 28,
+      "Drilling Diam. of Bolt Hole, in.": "1-3/4",
+      "Diam. of Bolt, in.": "1-5/8",
+      "Minimum Fillet Radius, r1": 13,
+      "Length of Bolts, L [Notes (4), (5)] Stud Bolts Raised Face 6.4 mm": 360
+     }
+    },
+    {
+     "nps": "28",
+     "values": {
+      "O.D. of Flange, O": 952,
+      "Minimum Thickness of Flange, tf [Note (1)] Weld Neck Flange": 115.8,
+      "Minimum Thickness of Flange, tf [Note (1)] Blind Flange": 115.8,
+      "Length Through Hub, Y": 190,
+      "Diam. of Hub, X [Note (2)]": 752,
+      "Hub Diam. Top, A [Note (3)]": 711.2,
+      "Raised Face Diam., R": 784,
+      "Drilling Diam. of Bolt Circle": 863.6,
+      "Drilling No. of Bolt Holes": 28,
+      "Drilling Diam. of Bolt Hole, in.": "1-7/8",
+      "Diam. of Bolt, in.": "1-3/4",
+      "Minimum Fillet Radius, r1": 13,
+      "Length of Bolts, L [Notes (4), (5)] Stud Bolts Raised Face 6.4 mm": 375
+     }
+    },
+    {
+     "nps": "30",
+     "values": {
+      "O.D. of Flange, O": 1022,
+      "Minimum Thickness of Flange, tf [Note (1)] Weld Neck Flange": 125.5,
+      "Minimum Thickness of Flange, tf [Note (1)] Blind Flange": 127.0,
+      "Length Through Hub, Y": 205,
+      "Diam. of Hub, X [Note (2)]": 806,
+      "Hub Diam. Top, A [Note (3)]": 762.0,
+      "Raised Face Diam., R": 841,
+      "Drilling Diam. of Bolt Circle": 927.1,
+      "Drilling No. of Bolt Holes": 28,
+      "Drilling Diam. of Bolt Hole, in.": "2",
+      "Diam. of Bolt, in.": "1-7/8",
+      "Minimum Fillet Radius, r1": 13,
+      "Length of Bolts, L [Notes (4), (5)] Stud Bolts Raised Face 6.4 mm": 395
+     }
+    },
+    {
+     "nps": "32",
+     "values": {
+      "O.D. of Flange, O": 1086,
+      "Minimum Thickness of Flange, tf [Note (1)] Weld Neck Flange": 130.0,
+      "Minimum Thickness of Flange, tf [Note (1)] Blind Flange": 134.9,
+      "Length Through Hub, Y": 216,
+      "Diam. of Hub, X [Note (2)]": 861,
+      "Hub Diam. Top, A [Note (3)]": 812.8,
+      "Raised Face Diam., R": 895,
+      "Drilling Diam. of Bolt Circle": 984.2,
+      "Drilling No. of Bolt Holes": 28,
+      "Drilling Diam. of Bolt Hole, in.": "2-1/8",
+      "Diam. of Bolt, in.": "2",
+      "Minimum Fillet Radius, r1": 13,
+      "Length of Bolts, L [Notes (4), (5)] Stud Bolts Raised Face 6.4 mm": 415
+     }
+    },
+    {
+     "nps": "34",
+     "values": {
+      "O.D. of Flange, O": 1162,
+      "Minimum Thickness of Flange, tf [Note (1)] Weld Neck Flange": 141.2,
+      "Minimum Thickness of Flange, tf [Note (1)] Blind Flange": 144.3,
+      "Length Through Hub, Y": 233,
+      "Diam. of Hub, X [Note (2)]": 914,
+      "Hub Diam. Top, A [Note (3)]": 863.6,
+      "Raised Face Diam., R": 952,
+      "Drilling Diam. of Bolt Circle": 1054.1,
+      "Drilling No. of Bolt Holes": 24,
+      "Drilling Diam. of Bolt Hole, in.": "2-3/8",
+      "Diam. of Bolt, in.": "2-1/4",
+      "Minimum Fillet Radius, r1": 14,
+      "Length of Bolts, L [Notes (4), (5)] Stud Bolts Raised Face 6.4 mm": 440
+     }
+    },
+    {
+     "nps": "36",
+     "values": {
+      "O.D. of Flange, O": 1213,
+      "Minimum Thickness of Flange, tf [Note (1)] Weld Neck Flange": 146.0,
+      "Minimum Thickness of Flange, tf [Note (1)] Blind Flange": 150.9,
+      "Length Through Hub, Y": 243,
+      "Diam. of Hub, X [Note (2)]": 968,
+      "Hub Diam. Top, A [Note (3)]": 914.4,
+      "Raised Face Diam., R": 1010,
+      "Drilling Diam. of Bolt Circle": 1104.9,
+      "Drilling No. of Bolt Holes": 28,
+      "Drilling Diam. of Bolt Hole, in.": "2-3/8",
+      "Diam. of Bolt, in.": "2-1/4",
+      "Minimum Fillet Radius, r1": 14,
+      "Length of Bolts, L [Notes (4), (5)] Stud Bolts Raised Face 6.4 mm": 460
+     }
+    }
+   ],
    "notes": "Nominal Pipe Size | O.D. of Flange, O | Minimum Thickness of Flange, tf | Length Through Hub, Y | Diam. of Hub, X [Note (2)] | Hub Diam. Top, A [Note (3)] | Raised Face Diam., R | Drilling | Diam. of Bolt, in. | Minimum Fillet Radius, r1 | Length of Bolts, L [Notes (4), (5)] Stud Bolts | [Note | (1)] | Weld Neck Flange | Blind Flange | Diam. of Bolt Circle | No. of Bolt Holes | Diam. of Bolt Hole, in. | Raised Face 6.4 mm | 26 28 30 32 34 | 889 952 1022 1 086 1 162 | 111.3 115.8 125.5 130.0 141.2 | 111.3 115.8 127.0 134.9 144.3 | 181 190 205 216 233 | 698 752 806 861 914 | 660.4 711.2 762.0 812.8 863.6 | 727 784 841 895 952 | 806.4 863.6 927.1 984.2 1 054.1 | 28 28 28 28 24 | 13/4 17/8 2 21/8 23/8 | 15/8 13/4 17/8 2 21/4 | 13 13 13 13 14 | 360 375 395 415 440 | 36 38 40 42 44 | 146.0 | 150.9 | 914.4 | 1 104.9 | 23/8 | 21/4 | 46 48 50 52 54 | (25) | Minimum Thickness of Flange, tf [Note (1)] | Drilling | Length of Bolts, L [Notes (4), (5)] | Hub | Stud Bolts | Nominal Pipe Size | O.D. of Flange, O | Weld Neck    Blind Flange Flange | Length Through Hub, Y | Diam. of Hub, X [Note (2)] | Diam. Top, A [Note (3)] | Raised Face Diam., R | Diam. of Bolt Circle | No. of Bolt Holes | Diam. of Bolt Hole, in. | Diam. of Bolt, in. | Minimum Fillet Radius, r1 | Raised Face 6.4 mm | GENERAL NOTES: | (a)    Dimensions are in millimeters unless otherwise noted. | (b)    For tolerances, see section 7. | (c)    For facings, see para. 6.1. | (d)    For flange bolt holes, see para. 6.2. | (e)    For spot facing, see para. 6.3. | (f)    The bore is to be specified by the purchaser. Tolerances in para. 7.3.2 apply. | (g)    Blind flanges may be made with or without hubs at the manufacturer’s option. The manufacturer or purchaser may modify blind flanges with the following features: | (1)    a hole bored to match the ID of a slip-on flange up to NPS 3 | (2)    a socket equivalent to that provided for a socket-welding flange up to NPS 3 | (3)    an internal thread to ASME B1.20.1 up to NPS 3 | Holes can be placed anywhere within the inside diameter of the mating pipe. When multiple holes are provided, they shall be separated bya distance at least equal to that of the diameter of the | largest hole being added. | (h)    Dimensions for Classes 400, 600, and 900 NPS 38 and larger for Series B flanges are the same as for the Series A flanges. | NOTES: | (1)    The minimum flange thickness does not include the raised face thickness (see para. 6.1.1). | (2)    This dimension is for the large end of hub, which may be straight or tapered. | (3)    For welding and bevel, see para. 6.4. | (4)    The length of the stud bolt does not include the height of the points (see para. 6.5.2). | (5)    Bolt lengths not shown in the table may be determined in accordance with Nonmandatory Appendix D (see para. 6.5.2).",
-   "DAMAGED_SOURCE": "Source export is corrupt for these packed size rows (values missing/untokenizable); re-export required: 26 28 30 32 34; 36 38 40 42 44; 46 48 50 52 54; 56; 58; 60"
+   "source": "user-supplied original PDF pages of the licensed standard, transcribed 2026-07-15",
+   "nps_38_and_larger": "use Series A dimensions per General Note (h); printed '...' in this table. General Note (h), verbatim: Dimensions for Classes 400, 600, and 900 NPS 38 and larger for Series B flanges are the same as for the Series A flanges.",
+   "cross_reference": "A:600"
   },
   "B:900": {
    "source_table": "Table 42",
@@ -14765,7 +14887,8 @@
     }
    ],
    "notes": "Minimum Thickness of Flange, tf [Note (1)] | Drilling | Length of Bolts, L [Notes (4), (5)] | Hub | Stud Bolts | Nominal Pipe Size | O.D. of Flange, O | Weld Neck    Blind Flange   Flange | Length Through Hub, Y | Diam. of Hub, X [Note (2)] | Diam. Top, A [Note (3)] | Raised Face Diam., R | Diam. of Bolt Circle | No. of Bolt Holes | Diam. of Bolt Hole, in. | Diam. of Bolt, in. | Minimum Fillet Radius, r1 | Raised Face 6.4 mm | GENERAL NOTES: | (a)    Dimensions are in millimeters unless otherwise noted. | (b)    For tolerances, see section 7. | (c)    For facings, see para. 6.1. | (d)    For flange bolt holes, see para. 6.2. | (e)    For sport facing, see para. 6.3. | (f)    The bore is to be specified by the purchaser. Tolerances in para. 7.3.2 apply. | (g)    Blind flanges may be made with or without hubs at the manufacturer’s option. The manufacturer or purchaser may modify blind flanges with the following features: | (1)    a hole bored to match the ID of a slip-on flange up to NPS 3 | (2)    a socket equivalent to that provided for a socket-welding flange up to NPS 3 | (3)    an internal thread to ASME B1.20.1 up to NPS 3 | Holes can be placed anywhere within the inside diameter of the mating pipe. When multiple holes are provided, they shall be separated bya distance at least equal to that of the diameter of the | largest hole being added. | (h)    Dimensions for Classes 400, 600, and 900 NPS 38 and larger for Series B flanges are the same as for the Series A flanges. | NOTES: | (1)    The minimum flange thickness does not include the raised face thickness (see para. 6.1.1). | (2)    This dimension is for the large end of hub, which may be straight or tapered. | (3)    For welding and bevel, see para. 6.4. | (4)    The length of the stud bolt does not include the height of the points (see para. 6.5.2). | (5)    Bolt lengths not shown in the table may be determined in accordance with Nonmandatory Appendix D (see para. 6.5.2).",
-   "DAMAGED_SOURCE": "Source export is corrupt for these packed size rows (values missing/untokenizable); re-export required: 38; 40; 42; 44; 46; 48; 50; 52; 54; 56; 58; 60"
+   "nps_38_and_larger": "use Series A dimensions per General Note (h); printed '...' in this table. General Note (h), verbatim: Dimensions for Classes 400, 600, and 900 NPS 38 and larger for Series B flanges are the same as for the Series A flanges.",
+   "cross_reference": "A:900"
   }
  },
  "ring_joints": {

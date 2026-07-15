@@ -58,7 +58,21 @@
    "Table 2-3.8.xlsx",
    "Table 2-3.9.xlsx"
   ],
-  "dims_note": "Dimension sections extracted verbatim from ASME B16.5-2025 Tables 4,5,7-22 (SI). Column labels are the standard's own header texts; token_repairs lists every size token reconstructed via the closed NPS ladder."
+  "dims_note": "Dimension sections extracted verbatim from ASME B16.5-2025 Tables 4,5,7-22 (SI). Column labels are the standard's own header texts; token_repairs lists every size token reconstructed via the closed NPS ladder.",
+  "verify_flags": [
+   {
+    "item": "Table 2-3.3 CL2500 350C=128.2 -> 375C=128.3",
+    "status": "CONFIRMED as printed in the standard (PDF checked)"
+   },
+   {
+    "item": "Table 18 first size rows 1/2..1-1/4 (token '14' repaired to 1/2)",
+    "status": "CONFIRMED against PDF"
+   },
+   {
+    "item": "Table 1.1-1 'A350 Gr. LF6 CI. 1' transcription",
+    "status": "the 'CI.' typo exists in the standard's own PDF text layer; matching layer handles it"
+   }
+  ]
  },
  "material_groups": [
   {
@@ -30138,346 +30152,769 @@
  },
  "ring_joints": {
   "source_table": "Table 5",
-  "columns": [
-   "Nominal Size Class 150 NPS",
-   "Class 300 NPS",
-   "Class 400 NPS (2)",
-   "Class 600 NPS",
-   "Class 900 NPS (3)",
-   "Class 1500 NPS",
-   "Class 2500 NPS",
-   "Groove Number",
-   "Groove Dimensions Pitch Diameter, P",
-   "Depth, E (1)",
-   "Width, F",
-   ". Radius at Bottom, R"
-  ],
+  "keyed_by": "groove_no",
+  "source": "user-supplied original PDF pages of the licensed standard, transcribed 2026-07-15",
   "rows": [
    {
-    "groove_no": "11",
+    "groove_no": "R11",
     "values": {
-     "Groove Dimensions Pitch Diameter, P": 34.14,
-     "Depth, E (1)": 5.56,
+     "NPS for Class 300": "1/2",
+     "NPS for Class 600": "1/2",
+     "Pitch Diameter, P": 34.14,
+     "Depth, E [Note (1)]": 5.56,
      "Width, F": 7.14,
-     ". Radius at Bottom, R": 0.8
+     "Radius at Bottom, R": 0.8
     }
    },
    {
-    "groove_no": "12",
+    "groove_no": "R12",
     "values": {
-     "Class 1500 NPS": "V2",
-     "Groove Dimensions Pitch Diameter, P": 39.67,
-     "Depth, E (1)": 6.35,
-     "Width, F": 8.74,
-     ". Radius at Bottom, R": 0.8
-    }
-   },
-   {
-    "groove_no": "13",
-    "values": {
-     "Class 300 NPS": "%",
-     "Class 2500 NPS": "V2",
-     "Groove Dimensions Pitch Diameter, P": 42.88,
-     "Depth, E (1)": 6.35,
-     "Width, F": 8.74,
-     ". Radius at Bottom, R": 0.8
-    }
-   },
-   {
-    "groove_no": "14",
-    "values": {
-     "Class 1500 NPS": "%",
-     "Groove Dimensions Pitch Diameter, P": 44.45,
-     "Depth, E (1)": 6.35,
-     "Width, F": 8.74,
-     ". Radius at Bottom, R": 0.8
-    }
-   },
-   {
-    "groove_no": "15",
-    "values": {
-     "Nominal Size Class 150 NPS": 1.0,
-     "Groove Dimensions Pitch Diameter, P": 47.62,
-     "Depth, E (1)": 6.35,
-     "Width, F": 8.74,
-     ". Radius at Bottom, R": 0.8
-    }
-   },
-   {
-    "groove_no": "16",
-    "values": {
-     "Class 300 NPS": 1.0,
-     "Class 600 NPS": 1.0,
-     "Class 1500 NPS": 1.0,
-     "Class 2500 NPS": "%",
-     "Groove Dimensions Pitch Diameter, P": 50.8,
-     "Depth, E (1)": 6.35,
-     "Width, F": 8.74,
-     ". Radius at Bottom, R": 0.8
-    }
-   },
-   {
-    "groove_no": "17",
-    "values": {
-     "Nominal Size Class 150 NPS": "l^",
-     "Groove Dimensions Pitch Diameter, P": 57.15,
-     "Depth, E (1)": 6.35,
-     "Width, F": 8.74,
-     ". Radius at Bottom, R": 0.8
-    }
-   },
-   {
-    "groove_no": "18",
-    "values": {
-     "Class 300 NPS": "l^",
-     "Class 600 NPS": "1V4",
-     "Class 1500 NPS": "1%",
-     "Class 2500 NPS": 1.0,
-     "Groove Dimensions Pitch Diameter, P": 60.33,
-     "Depth, E (1)": 6.35,
-     "Width, F": 8.74,
-     ". Radius at Bottom, R": 0.8
-    }
-   },
-   {
-    "groove_no": "19",
-    "values": {
-     "Nominal Size Class 150 NPS": "1^",
-     "Groove Dimensions Pitch Diameter, P": 65.07,
-     "Depth, E (1)": 6.35,
-     "Width, F": 8.74,
-     ". Radius at Bottom, R": 0.8
-    }
-   },
-   {
-    "groove_no": "20",
-    "values": {
-     "Class 300 NPS": "1V2",
-     "Class 600 NPS": "1V2",
-     "Class 1500 NPS": "1V2",
-     "Groove Dimensions Pitch Diameter, P": 68.28,
-     "Depth, E (1)": 6.35,
-     "Width, F": 8.74,
-     ". Radius at Bottom, R": 0.8
-    }
-   },
-   {
-    "groove_no": "41",
-    "values": {
-     "Class 300 NPS": 5.0,
-     "Class 400 NPS (2)": 5.0,
-     "Class 600 NPS": 5.0,
-     "Class 900 NPS (3)": 5.0,
-     "Groove Dimensions Pitch Diameter, P": 180.98,
-     "Depth, E (1)": 7.92,
-     "Width, F": 11.91,
-     "_ Radius at Bottom, R": 0.8
-    }
-   },
-   {
-    "groove_no": "42",
-    "values": {
-     "Class 2500 NPS": 5.0,
-     "Groove Dimensions Pitch Diameter, P": 190.5,
-     "Depth, E (1)": 12.7,
-     "Width, F": 19.84,
-     "_ Radius at Bottom, R": 1.5
-    }
-   },
-   {
-    "groove_no": "43",
-    "values": {
-     "Nominal Size Class 150 NPS": 6.0,
-     "Groove Dimensions Pitch Diameter, P": 193.68,
-     "Depth, E (1)": 6.35,
-     "Width, F": 8.74,
-     "_ Radius at Bottom, R": 0.8
-    }
-   },
-   {
-    "groove_no": "44",
-    "values": {
-     "Class 1500 NPS": 5.0,
-     "Groove Dimensions Pitch Diameter, P": 193.68,
-     "Depth, E (1)": 7.92,
-     "Width, F": 11.91,
-     "_ Radius at Bottom, R": 0.8
-    }
-   },
-   {
-    "groove_no": "45",
-    "values": {
-     "Class 300 NPS": 6.0,
-     "Class 400 NPS (2)": 6.0,
-     "Class 600 NPS": 6.0,
-     "Class 900 NPS (3)": 6.0,
-     "Groove Dimensions Pitch Diameter, P": 211.12,
-     "Depth, E (1)": 7.92,
-     "Width, F": 11.91,
-     "_ Radius at Bottom, R": 0.8
-    }
-   },
-   {
-    "groove_no": "46",
-    "values": {
-     "Class 1500 NPS": 6.0,
-     "Groove Dimensions Pitch Diameter, P": 211.14,
-     "Depth, E (1)": 9.52,
-     "Width, F": 13.49,
-     "_ Radius at Bottom, R": 1.5
-    }
-   },
-   {
-    "groove_no": "47",
-    "values": {
-     "Class 2500 NPS": 6.0,
-     "Groove Dimensions Pitch Diameter, P": 228.6,
-     "Depth, E (1)": 12.7,
-     "Width, F": 19.84,
-     "_ Radius at Bottom, R": 1.5
-    }
-   },
-   {
-    "groove_no": "48",
-    "values": {
-     "Nominal Size Class 150 NPS": 8.0,
-     "Groove Dimensions Pitch Diameter, P": 247.65,
-     "Depth, E (1)": 6.35,
-     "Width, F": 8.74,
-     "_ Radius at Bottom, R": 0.8
-    }
-   },
-   {
-    "groove_no": "49",
-    "values": {
-     "Class 300 NPS": 8.0,
-     "Class 400 NPS (2)": 8.0,
-     "Class 600 NPS": 8.0,
-     "Class 900 NPS (3)": 8.0,
-     "Groove Dimensions Pitch Diameter, P": 269.88,
-     "Depth, E (1)": 7.92,
-     "Width, F": 11.91,
-     "_ Radius at Bottom, R": 0.8
-    }
-   },
-   {
-    "groove_no": "50",
-    "values": {
-     "Class 1500 NPS": 8.0,
-     "Groove Dimensions Pitch Diameter, P": 269.88,
-     "Depth, E (1)": 11.13,
-     "Width, F": 16.66,
-     "_ Radius at Bottom, R": 1.5
-    }
-   },
-   {
-    "groove_no": "72",
-    "values": {
-     "Class 150 NPS": 20.0,
-     "Groove Dimensions Pitch Diameter, P": 558.8,
-     "Depth, E (1)": 6.35,
+     "NPS for Class 1500": "1/2",
+     "Pitch Diameter, P": 39.67,
+     "Depth, E [Note (1)]": 6.35,
      "Width, F": 8.74,
      "Radius at Bottom, R": 0.8
     }
    },
    {
-    "groove_no": "73",
+    "groove_no": "R13",
     "values": {
-     "Class 300 NPS": 20.0,
-     "Class 400 NPS (2)": 20.0,
-     "Nominal Size Class 600 NPS": 20.0,
-     "Groove Dimensions Pitch Diameter, P": 584.2,
-     "Depth, E (1)": 9.52,
+     "NPS for Class 300": "3/4",
+     "NPS for Class 600": "3/4",
+     "NPS for Class 2500": "1/2",
+     "Pitch Diameter, P": 42.88,
+     "Depth, E [Note (1)]": 6.35,
+     "Width, F": 8.74,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R14",
+    "values": {
+     "NPS for Class 1500": "3/4",
+     "Pitch Diameter, P": 44.45,
+     "Depth, E [Note (1)]": 6.35,
+     "Width, F": 8.74,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R15",
+    "values": {
+     "NPS for Class 150": "1",
+     "Pitch Diameter, P": 47.62,
+     "Depth, E [Note (1)]": 6.35,
+     "Width, F": 8.74,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R16",
+    "values": {
+     "NPS for Class 300": "1",
+     "NPS for Class 600": "1",
+     "NPS for Class 1500": "1",
+     "NPS for Class 2500": "3/4",
+     "Pitch Diameter, P": 50.8,
+     "Depth, E [Note (1)]": 6.35,
+     "Width, F": 8.74,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R17",
+    "values": {
+     "NPS for Class 150": "1-1/4",
+     "Pitch Diameter, P": 57.15,
+     "Depth, E [Note (1)]": 6.35,
+     "Width, F": 8.74,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R18",
+    "values": {
+     "NPS for Class 300": "1-1/4",
+     "NPS for Class 600": "1-1/4",
+     "NPS for Class 1500": "1-1/4",
+     "NPS for Class 2500": "1",
+     "Pitch Diameter, P": 60.33,
+     "Depth, E [Note (1)]": 6.35,
+     "Width, F": 8.74,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R19",
+    "values": {
+     "NPS for Class 150": "1-1/2",
+     "Pitch Diameter, P": 65.07,
+     "Depth, E [Note (1)]": 6.35,
+     "Width, F": 8.74,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R20",
+    "values": {
+     "NPS for Class 300": "1-1/2",
+     "NPS for Class 600": "1-1/2",
+     "NPS for Class 1500": "1-1/2",
+     "Pitch Diameter, P": 68.28,
+     "Depth, E [Note (1)]": 6.35,
+     "Width, F": 8.74,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R21",
+    "values": {
+     "NPS for Class 2500": "1-1/4",
+     "Pitch Diameter, P": 72.24,
+     "Depth, E [Note (1)]": 7.92,
+     "Width, F": 11.91,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R22",
+    "values": {
+     "NPS for Class 150": "2",
+     "Pitch Diameter, P": 82.55,
+     "Depth, E [Note (1)]": 6.35,
+     "Width, F": 8.74,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R23",
+    "values": {
+     "NPS for Class 300": "2",
+     "NPS for Class 600": "2",
+     "NPS for Class 2500": "1-1/2",
+     "Pitch Diameter, P": 82.55,
+     "Depth, E [Note (1)]": 7.92,
+     "Width, F": 11.91,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R24",
+    "values": {
+     "NPS for Class 1500": "2",
+     "Pitch Diameter, P": 95.25,
+     "Depth, E [Note (1)]": 7.92,
+     "Width, F": 11.91,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R25",
+    "values": {
+     "NPS for Class 150": "2-1/2",
+     "Pitch Diameter, P": 101.6,
+     "Depth, E [Note (1)]": 6.35,
+     "Width, F": 8.74,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R26",
+    "values": {
+     "NPS for Class 300": "2-1/2",
+     "NPS for Class 600": "2-1/2",
+     "NPS for Class 2500": "2",
+     "Pitch Diameter, P": 101.6,
+     "Depth, E [Note (1)]": 7.92,
+     "Width, F": 11.91,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R27",
+    "values": {
+     "NPS for Class 1500": "2-1/2",
+     "Pitch Diameter, P": 107.95,
+     "Depth, E [Note (1)]": 7.92,
+     "Width, F": 11.91,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R28",
+    "values": {
+     "NPS for Class 2500": "2-1/2",
+     "Pitch Diameter, P": 111.12,
+     "Depth, E [Note (1)]": 9.53,
      "Width, F": 13.49,
      "Radius at Bottom, R": 1.5
     }
    },
    {
-    "groove_no": "74",
+    "groove_no": "R29",
     "values": {
-     "Class 900 NPS (3)": 20.0,
-     "Groove Dimensions Pitch Diameter, P": 584.2,
-     "Depth, E (1)": 12.7,
+     "NPS for Class 150": "3",
+     "Pitch Diameter, P": 114.3,
+     "Depth, E [Note (1)]": 6.35,
+     "Width, F": 8.74,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R30",
+    "values": {
+     "NPS for Class 300": "(4)",
+     "NPS for Class 600": "(4)",
+     "Pitch Diameter, P": 117.48,
+     "Depth, E [Note (1)]": 7.92,
+     "Width, F": 11.91,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R31",
+    "values": {
+     "NPS for Class 300": "3 (4)",
+     "NPS for Class 600": "3 (4)",
+     "NPS for Class 900": "3",
+     "Pitch Diameter, P": 123.82,
+     "Depth, E [Note (1)]": 7.92,
+     "Width, F": 11.91,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R32",
+    "values": {
+     "NPS for Class 2500": "3",
+     "Pitch Diameter, P": 127.0,
+     "Depth, E [Note (1)]": 9.53,
+     "Width, F": 13.49,
+     "Radius at Bottom, R": 1.5
+    }
+   },
+   {
+    "groove_no": "R33",
+    "values": {
+     "NPS for Class 150": "3-1/2",
+     "Pitch Diameter, P": 131.78,
+     "Depth, E [Note (1)]": 6.35,
+     "Width, F": 8.74,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R34",
+    "values": {
+     "NPS for Class 300": "3-1/2",
+     "NPS for Class 600": "3-1/2",
+     "Pitch Diameter, P": 131.78,
+     "Depth, E [Note (1)]": 7.92,
+     "Width, F": 11.91,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R35",
+    "values": {
+     "NPS for Class 1500": "3",
+     "Pitch Diameter, P": 136.52,
+     "Depth, E [Note (1)]": 7.92,
+     "Width, F": 11.91,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R36",
+    "values": {
+     "NPS for Class 150": "4",
+     "Pitch Diameter, P": 149.22,
+     "Depth, E [Note (1)]": 6.35,
+     "Width, F": 8.74,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R37",
+    "values": {
+     "NPS for Class 300": "4",
+     "NPS for Class 400": "4",
+     "NPS for Class 600": "4",
+     "NPS for Class 900": "4",
+     "Pitch Diameter, P": 149.22,
+     "Depth, E [Note (1)]": 7.92,
+     "Width, F": 11.91,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R38",
+    "values": {
+     "NPS for Class 2500": "4",
+     "Pitch Diameter, P": 157.18,
+     "Depth, E [Note (1)]": 11.13,
+     "Width, F": 16.66,
+     "Radius at Bottom, R": 1.5
+    }
+   },
+   {
+    "groove_no": "R39",
+    "values": {
+     "NPS for Class 1500": "4",
+     "Pitch Diameter, P": 161.92,
+     "Depth, E [Note (1)]": 7.92,
+     "Width, F": 11.91,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R40",
+    "values": {
+     "NPS for Class 150": "5",
+     "Pitch Diameter, P": 171.45,
+     "Depth, E [Note (1)]": 6.35,
+     "Width, F": 8.74,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R41",
+    "values": {
+     "NPS for Class 300": "5",
+     "NPS for Class 400": "5",
+     "NPS for Class 600": "5",
+     "NPS for Class 900": "5",
+     "Pitch Diameter, P": 180.98,
+     "Depth, E [Note (1)]": 7.92,
+     "Width, F": 11.91,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R42",
+    "values": {
+     "NPS for Class 2500": "5",
+     "Pitch Diameter, P": 190.5,
+     "Depth, E [Note (1)]": 12.7,
      "Width, F": 19.84,
      "Radius at Bottom, R": 1.5
     }
    },
    {
-    "groove_no": "75",
+    "groove_no": "R43",
     "values": {
-     "Class 1500 NPS": 20.0,
-     "Groove Dimensions Pitch Diameter, P": 584.2,
-     "Depth, E (1)": 17.48,
+     "NPS for Class 150": "6",
+     "Pitch Diameter, P": 193.68,
+     "Depth, E [Note (1)]": 6.35,
+     "Width, F": 8.74,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R44",
+    "values": {
+     "NPS for Class 1500": "5",
+     "Pitch Diameter, P": 193.68,
+     "Depth, E [Note (1)]": 7.92,
+     "Width, F": 11.91,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R45",
+    "values": {
+     "NPS for Class 300": "6",
+     "NPS for Class 400": "6",
+     "NPS for Class 600": "6",
+     "NPS for Class 900": "6",
+     "Pitch Diameter, P": 211.12,
+     "Depth, E [Note (1)]": 7.92,
+     "Width, F": 11.91,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R46",
+    "values": {
+     "NPS for Class 1500": "6",
+     "Pitch Diameter, P": 211.14,
+     "Depth, E [Note (1)]": 9.52,
+     "Width, F": 13.49,
+     "Radius at Bottom, R": 1.5
+    }
+   },
+   {
+    "groove_no": "R47",
+    "values": {
+     "NPS for Class 2500": "6",
+     "Pitch Diameter, P": 228.6,
+     "Depth, E [Note (1)]": 12.7,
+     "Width, F": 19.84,
+     "Radius at Bottom, R": 1.5
+    }
+   },
+   {
+    "groove_no": "R48",
+    "values": {
+     "NPS for Class 150": "8",
+     "Pitch Diameter, P": 247.65,
+     "Depth, E [Note (1)]": 6.35,
+     "Width, F": 8.74,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R49",
+    "values": {
+     "NPS for Class 300": "8",
+     "NPS for Class 400": "8",
+     "NPS for Class 600": "8",
+     "NPS for Class 900": "8",
+     "Pitch Diameter, P": 269.88,
+     "Depth, E [Note (1)]": 7.92,
+     "Width, F": 11.91,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R50",
+    "values": {
+     "NPS for Class 1500": "8",
+     "Pitch Diameter, P": 269.88,
+     "Depth, E [Note (1)]": 11.13,
+     "Width, F": 16.66,
+     "Radius at Bottom, R": 1.5
+    }
+   },
+   {
+    "groove_no": "R51",
+    "values": {
+     "NPS for Class 2500": "8",
+     "Pitch Diameter, P": 279.4,
+     "Depth, E [Note (1)]": 14.27,
+     "Width, F": 23.01,
+     "Radius at Bottom, R": 1.5
+    }
+   },
+   {
+    "groove_no": "R52",
+    "values": {
+     "NPS for Class 150": "10",
+     "Pitch Diameter, P": 304.8,
+     "Depth, E [Note (1)]": 6.35,
+     "Width, F": 8.74,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R53",
+    "values": {
+     "NPS for Class 300": "10",
+     "NPS for Class 400": "10",
+     "NPS for Class 600": "10",
+     "NPS for Class 900": "10",
+     "Pitch Diameter, P": 323.85,
+     "Depth, E [Note (1)]": 7.92,
+     "Width, F": 11.91,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R54",
+    "values": {
+     "NPS for Class 1500": "10",
+     "Pitch Diameter, P": 323.85,
+     "Depth, E [Note (1)]": 11.13,
+     "Width, F": 16.66,
+     "Radius at Bottom, R": 1.5
+    }
+   },
+   {
+    "groove_no": "R55",
+    "values": {
+     "NPS for Class 2500": "10",
+     "Pitch Diameter, P": 342.9,
+     "Depth, E [Note (1)]": 17.48,
+     "Width, F": 30.18,
+     "Radius at Bottom, R": 2.3
+    }
+   },
+   {
+    "groove_no": "R56",
+    "values": {
+     "NPS for Class 150": "12",
+     "Pitch Diameter, P": 381.0,
+     "Depth, E [Note (1)]": 6.35,
+     "Width, F": 8.74,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R57",
+    "values": {
+     "NPS for Class 300": "12",
+     "NPS for Class 400": "12",
+     "NPS for Class 600": "12",
+     "NPS for Class 900": "12",
+     "Pitch Diameter, P": 381.0,
+     "Depth, E [Note (1)]": 7.92,
+     "Width, F": 11.91,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R58",
+    "values": {
+     "NPS for Class 1500": "12",
+     "Pitch Diameter, P": 381.0,
+     "Depth, E [Note (1)]": 14.27,
+     "Width, F": 23.01,
+     "Radius at Bottom, R": 1.5
+    }
+   },
+   {
+    "groove_no": "R59",
+    "values": {
+     "NPS for Class 150": "14",
+     "Pitch Diameter, P": 396.88,
+     "Depth, E [Note (1)]": 6.35,
+     "Width, F": 8.74,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R60",
+    "values": {
+     "NPS for Class 2500": "12",
+     "Pitch Diameter, P": 406.4,
+     "Depth, E [Note (1)]": 17.48,
      "Width, F": 33.32,
      "Radius at Bottom, R": 2.3
     }
    },
    {
-    "groove_no": "80",
+    "groove_no": "R61",
     "values": {
-     "Class 150 NPS": 22.0,
-     "Groove Dimensions Pitch Diameter, P": 615.95,
-     "Depth, E (1)": 6.35,
-     "Width, F": 8.74,
+     "NPS for Class 300": "14",
+     "NPS for Class 400": "14",
+     "NPS for Class 600": "14",
+     "Pitch Diameter, P": 419.1,
+     "Depth, E [Note (1)]": 7.92,
+     "Width, F": 11.91,
      "Radius at Bottom, R": 0.8
     }
    },
    {
-    "groove_no": "81",
+    "groove_no": "R62",
     "values": {
-     "Class 300 NPS": 22.0,
-     "Class 400 NPS (2)": 22.0,
-     "Nominal Size Class 600 NPS": 22.0,
-     "Groove Dimensions Pitch Diameter, P": 635.0,
-     "Depth, E (1)": 11.13,
-     "Width, F": 15.09,
-     "Radius at Bottom, R": 1.5
-    }
-   },
-   {
-    "groove_no": "76",
-    "values": {
-     "Class 150 NPS": 24.0,
-     "Groove Dimensions Pitch Diameter, P": 673.1,
-     "Depth, E (1)": 6.35,
-     "Width, F": 8.74,
-     "Radius at Bottom, R": 0.8
-    }
-   },
-   {
-    "groove_no": "77",
-    "values": {
-     "Class 300 NPS": 24.0,
-     "Class 400 NPS (2)": 24.0,
-     "Nominal Size Class 600 NPS": 24.0,
-     "Groove Dimensions Pitch Diameter, P": 692.15,
-     "Depth, E (1)": 11.13,
+     "NPS for Class 900": "14",
+     "Pitch Diameter, P": 419.1,
+     "Depth, E [Note (1)]": 11.13,
      "Width, F": 16.66,
      "Radius at Bottom, R": 1.5
     }
    },
    {
-    "groove_no": "78",
+    "groove_no": "R63",
     "values": {
-     "Class 900 NPS (3)": 24.0,
-     "Groove Dimensions Pitch Diameter, P": 692.15,
-     "Depth, E (1)": 15.88,
+     "NPS for Class 1500": "14",
+     "Pitch Diameter, P": 419.1,
+     "Depth, E [Note (1)]": 15.88,
      "Width, F": 26.97,
      "Radius at Bottom, R": 2.3
     }
    },
    {
-    "groove_no": "79",
+    "groove_no": "R64",
     "values": {
-     "Class 1500 NPS": 24.0,
-     "Groove Dimensions Pitch Diameter, P": 692.15,
-     "Depth, E (1)": 20.62,
+     "NPS for Class 150": "16",
+     "Pitch Diameter, P": 454.02,
+     "Depth, E [Note (1)]": 6.35,
+     "Width, F": 8.74,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R65",
+    "values": {
+     "NPS for Class 300": "16",
+     "NPS for Class 400": "16",
+     "NPS for Class 600": "16",
+     "Pitch Diameter, P": 469.9,
+     "Depth, E [Note (1)]": 7.92,
+     "Width, F": 11.91,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R66",
+    "values": {
+     "NPS for Class 900": "16",
+     "Pitch Diameter, P": 469.9,
+     "Depth, E [Note (1)]": 11.13,
+     "Width, F": 16.66,
+     "Radius at Bottom, R": 1.5
+    }
+   },
+   {
+    "groove_no": "R67",
+    "values": {
+     "NPS for Class 1500": "16",
+     "Pitch Diameter, P": 469.9,
+     "Depth, E [Note (1)]": 17.48,
+     "Width, F": 30.18,
+     "Radius at Bottom, R": 2.3
+    }
+   },
+   {
+    "groove_no": "R68",
+    "values": {
+     "NPS for Class 150": "18",
+     "Pitch Diameter, P": 517.52,
+     "Depth, E [Note (1)]": 6.35,
+     "Width, F": 8.74,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R69",
+    "values": {
+     "NPS for Class 300": "18",
+     "NPS for Class 400": "18",
+     "NPS for Class 600": "18",
+     "Pitch Diameter, P": 533.4,
+     "Depth, E [Note (1)]": 7.92,
+     "Width, F": 11.91,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R70",
+    "values": {
+     "NPS for Class 900": "18",
+     "Pitch Diameter, P": 533.4,
+     "Depth, E [Note (1)]": 12.7,
+     "Width, F": 19.84,
+     "Radius at Bottom, R": 1.5
+    }
+   },
+   {
+    "groove_no": "R71",
+    "values": {
+     "NPS for Class 1500": "18",
+     "Pitch Diameter, P": 533.4,
+     "Depth, E [Note (1)]": 17.48,
+     "Width, F": 30.18,
+     "Radius at Bottom, R": 2.3
+    }
+   },
+   {
+    "groove_no": "R72",
+    "values": {
+     "NPS for Class 150": "20",
+     "Pitch Diameter, P": 558.8,
+     "Depth, E [Note (1)]": 6.35,
+     "Width, F": 8.74,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R73",
+    "values": {
+     "NPS for Class 300": "20",
+     "NPS for Class 400": "20",
+     "NPS for Class 600": "20",
+     "Pitch Diameter, P": 584.2,
+     "Depth, E [Note (1)]": 9.52,
+     "Width, F": 13.49,
+     "Radius at Bottom, R": 1.5
+    }
+   },
+   {
+    "groove_no": "R74",
+    "values": {
+     "NPS for Class 900": "20",
+     "Pitch Diameter, P": 584.2,
+     "Depth, E [Note (1)]": 12.7,
+     "Width, F": 19.84,
+     "Radius at Bottom, R": 1.5
+    }
+   },
+   {
+    "groove_no": "R75",
+    "values": {
+     "NPS for Class 1500": "20",
+     "Pitch Diameter, P": 584.2,
+     "Depth, E [Note (1)]": 17.48,
+     "Width, F": 33.32,
+     "Radius at Bottom, R": 2.3
+    }
+   },
+   {
+    "groove_no": "R80",
+    "values": {
+     "NPS for Class 150": "22",
+     "Pitch Diameter, P": 615.95,
+     "Depth, E [Note (1)]": 6.35,
+     "Width, F": 8.74,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R81",
+    "values": {
+     "NPS for Class 300": "22",
+     "NPS for Class 400": "22",
+     "NPS for Class 600": "22",
+     "Pitch Diameter, P": 635.0,
+     "Depth, E [Note (1)]": 11.13,
+     "Width, F": 15.09,
+     "Radius at Bottom, R": 1.5
+    }
+   },
+   {
+    "groove_no": "R76",
+    "values": {
+     "NPS for Class 150": "24",
+     "Pitch Diameter, P": 673.1,
+     "Depth, E [Note (1)]": 6.35,
+     "Width, F": 8.74,
+     "Radius at Bottom, R": 0.8
+    }
+   },
+   {
+    "groove_no": "R77",
+    "values": {
+     "NPS for Class 300": "24",
+     "NPS for Class 400": "24",
+     "NPS for Class 600": "24",
+     "Pitch Diameter, P": 692.15,
+     "Depth, E [Note (1)]": 11.13,
+     "Width, F": 16.66,
+     "Radius at Bottom, R": 1.5
+    }
+   },
+   {
+    "groove_no": "R78",
+    "values": {
+     "NPS for Class 900": "24",
+     "Pitch Diameter, P": 692.15,
+     "Depth, E [Note (1)]": 15.88,
+     "Width, F": 26.97,
+     "Radius at Bottom, R": 2.3
+    }
+   },
+   {
+    "groove_no": "R79",
+    "values": {
+     "NPS for Class 1500": "24",
+     "Pitch Diameter, P": 692.15,
+     "Depth, E [Note (1)]": 20.62,
      "Width, F": 36.53,
      "Radius at Bottom, R": 2.3
     }
    }
   ],
-  "notes": "Diameter of Raised Portion, K | Approximate Distance Between Flanges | Class 150 | Class 300 400 600 | Class 900 | Class 1500 | Class 2500 | Class 150 | Class 300 | Class 400 | Class 600 | Class 900 | Class 1500 | Class 2500 | 51.0 | 60.5 | 63.5 | 65.0 | 66.5 | 63.5 | 69.8 | 71.4 | 73.2 | 73.2 | 79.2 | 81.0 | 82.6 | 82.6 | 90.4 | 91.9 | 102               ...                 ...                 ...                 ...                 ...                 ...                 3 | 114             ...               6               ...               5                ...               ...               3 | 133             ...               6               ...               5                ...               ...               3 | 3 149               ...                 ...                 ...                 ...                 ...                 ...                 3 | 146      155 | 6            ...             5             4 168               ...                 ...                 ...                 ...                 ...                 ...                 3 | 6              ...              5 | 175      181 | ...            6             6             5             4 203               ...                 ...                 ...                 ...                 ...                 ...                 4 | Diameter of Raised Portion, K | Approximate Distance Between Flanges | Class 150 | Class 300 400 600 | Class 900 | Class 1500 | Class 2500 | Class 150 | Class 300 | Class 400 | Class 600 | Class 900 | Class 1500 | Class 2500 | 340               ...                 ...                 ...                 ...                 ...                 ...                 5 | 356      362 | ...            6             6             5             4 371               ...                 ...                 ...                 ...                 ...                 ...                 4 425               ...                 ...                 ...                 ...                 ...                 ...                 6 | 413      419 | ...            6             6             5             4 438               ...                 ...                 ...                 ...                 ...                 ...                 5 | 3 495               ...                 ...                 ...                 ...                 ...                 ...                 8 | ...            6             6             5 | 4 489               ...                 ...                 ...                 ...                 ...                 ...                 6 | ...            6             6             5 | 4 546               ...                 ...                 ...                 ...                 ...                 ...                 8 | ...            6             6             5 | 5 613               ...                 ...                 ...                 ...                 ...                 ...                 8 | Diameter of Raised Portion, K | Approximate Distance Between Flanges | Class 150 | Class 300 400 600 | Class 900 | Class 1500 | Class 2500 | Class 150 | Class 300 | Class 400 | Class 600 | Class 900 | Class 1500 | Class 2500 | GENERAL NOTES: | (a)    Dimensions are in millimeters. | (b)    For facing requirements for flanges and flanged fitting, see para. 6.4.1 and Figure 6. | (c)    For facing requirements for lapped joints, see para. 6.4.3 and Figure 6. | (d)    See para. 4.2.7 for marking requirements. | NOTES: | (1)    The height of the raised portion is equal to the depth of the groove dimension, E, but is not subjected to the tolerances for E. Former full-face | contour may be used. | (2)    Use Class 600 in sizes NPS 1/2 to NPS 31/2 for Class 400. | (3)    Use Class 1500 in sizes NPS 1/2 to NPS 21/2 for Class 900. | (4)    For ring joints with lapped flanges in Classes 300 and 600, ring and groove number R30 is used instead of R31. | TOLERANCES: | E = (depth) +0.41, -0.00 mm | F = (width) ±0.20 mm | P = (pitch diameter) ±0.13 mm | R = (radius at bottom) | x = R ≤ 1.5 + 0.8, -0.0 mm | x = R > 1.5 ± 0.8 mm | 23 = deg (angle) ± 1/2 deg",
-  "data_quality": "Class/NPS applicability columns contain mangled fraction glyphs from the source export (e.g. '%'/'V2'); kept verbatim — verify against the printed standard before relying on them."
+  "notes": "NOTES (verbatim): (1) The height of the raised portion is equal to the depth of the groove dimension, E, but is not subjected to the tolerances for E. Former full-face contour may be used. (2) Use Class 600 in sizes NPS 1/2 to NPS 3-1/2 for Class 400. (3) Use Class 1500 in sizes NPS 1/2 to NPS 2-1/2 for Class 900. (4) For ring joints with lapped flanges in Classes 300 and 600, ring and groove number R30 is used instead of R31. TOLERANCES: E +0.41/-0.00 mm; F +/-0.20 mm; P +/-0.13 mm; R<=1.5: +0.8/-0.0 mm, R>1.5: +/-0.8 mm; 23 deg angle +/- 1/2 deg. Columns 13-24 of Table 5 (Diameter of Raised Portion K, Approximate Distance Between Flanges) are in the source PDF but intentionally not digitized."
  }
 }

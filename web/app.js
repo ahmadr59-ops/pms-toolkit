@@ -36,6 +36,7 @@ $$('.tab').forEach(t=>t.onclick=()=>{
   if(t.dataset.v==='deviation') renderDeviation();
   if(t.dataset.v==='thickness') renderThickness();
   if(t.dataset.v==='compliance') renderCompliance();
+  if(t.dataset.v==='flange') renderFlange();
   if(t.dataset.v==='specbuilder') renderSpecBuilder();
 });
 
@@ -287,10 +288,20 @@ function renderDeviation(){
 
 // ---------- Thickness (ASME B31.3) ----------
 let SCHED=null, MATDB=null, THK=null, thkFilter='all';
+let FLG=null, flgFilter='all';
 async function loadDB(){
-  if(SCHED&&MATDB) return;
-  try{const a=await fetch('data/schedules.json');SCHED=a.ok?await a.json():{pipe:{},aliases:{}};}catch(e){SCHED={pipe:{},aliases:{}};}
-  try{const b=await fetch('data/materials.sample.json');MATDB=b.ok?await b.json():{meta:{},materials:[]};}catch(e){MATDB={meta:{},materials:[]};}
+  if(SCHED&&MATDB&&FLG) return;
+  const emb=n=>typeof loadEmbeddedDatapack==='function'?loadEmbeddedDatapack(n):null;
+  if(!SCHED) SCHED=emb('schedules');
+  if(!MATDB) MATDB=emb('materials');
+  if(!FLG)   FLG=emb('flanges');
+  if(!SCHED){try{const a=await fetch('data/schedules.json');SCHED=a.ok?await a.json():null;}catch(e){}}
+  if(!MATDB){try{const b=await fetch('data/materials.json');if(b.ok)MATDB=await b.json();}catch(e){}}
+  if(!MATDB){try{const b=await fetch('data/materials.sample.json');if(b.ok)MATDB=await b.json();}catch(e){}}
+  if(!FLG){try{const c=await fetch('data/flanges.json');if(c.ok)FLG=await c.json();}catch(e){}}
+  if(!FLG){try{const c=await fetch('../examples/flanges.datapack.sample.json');if(c.ok)FLG=await c.json();}catch(e){}}
+  SCHED=SCHED||{pipe:{},aliases:{}}; MATDB=MATDB||{meta:{},materials:[]};
+  FLG=FLG||{meta:{},material_groups:[]};
 }
 async function renderThickness(){
   await loadDB();
@@ -333,8 +344,10 @@ async function renderCompliance(){
    ${warn}
    <div class="toolbar"><button id="c-run">Run B31.3 check</button>
      <span class="muted" style="font-size:12px">for a formatted Excel report use the CLI: <code>pmskit check pms.json --xlsx report.xlsx</code></span></div>`;
-  if(!THK){ m.innerHTML=head+`<div class="drop">Press <b>Run B31.3 check</b> to evaluate the loaded PMS.</div>`;
-    $('#c-run').onclick=()=>{THK=window.PMSThickness.checkPMS(DATA,SCHED,MATDB,{});renderCompliance();}; return; }
+  if(!THK){ const fa=renderFlangeAdequacy();
+    m.innerHTML=head+`<div class="drop">Press <b>Run B31.3 check</b> to evaluate the loaded PMS.</div><hr style="border-color:var(--edge);margin:22px 0">`+fa.html;
+    $('#c-run').onclick=()=>{THK=window.PMSThickness.checkPMS(DATA,SCHED,MATDB,{});renderCompliance();};
+    wireFlangeAdequacy(fa.rows0); return; }
   const s=THK.summary;
   const rows=THK.rows.filter(r=>thkFilter==='all'||(thkFilter==='under'&&r.status==='UNDER-THICKNESS')||(thkFilter==='ok'&&r.status==='OK')||(thkFilter==='na'&&(r.status==='not-evaluated'||r.status==='no-schedule')));
   head+=`<div class="cards">
@@ -354,7 +367,9 @@ async function renderCompliance(){
      <td>${r.required_mm??''}</td><td>${r.margin_mm??''}</td>
      <td class="${r.status==='UNDER-THICKNESS'?'sev-error':(r.status==='OK'?'':'sev-warning')}">${r.status}</td>
      <td class="muted">${esc(r.remark||'')}</td></tr>`).join('')}</tbody></table>`;
-  m.innerHTML=head;
+  const fa=renderFlangeAdequacy();
+  m.innerHTML=head+`<hr style="border-color:var(--edge);margin:22px 0">`+fa.html;
+  wireFlangeAdequacy(fa.rows0);
   $('#c-run').onclick=()=>{THK=window.PMSThickness.checkPMS(DATA,SCHED,MATDB,{});renderCompliance();};
   $('#csev').onchange=e=>{thkFilter=e.target.value;renderCompliance();};
   $('#c-csv').onclick=()=>{
@@ -363,6 +378,93 @@ async function renderCompliance(){
     const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
     const lines=[H.join(',')].concat(THK.rows.map(r=>K.map(k=>q(r[k])).join(',')));
     dl('b31.3_compliance.csv','﻿'+lines.join('\r\n'),'text/csv');
+  };
+}
+
+// ---------- Flange rating (ASME B16.5, datapack-driven) ----------
+function wireFlangeAdequacy(rows0){
+  const sel=$('#fsev'); if(sel){sel.value=flgFilter;sel.onchange=e=>{flgFilter=e.target.value;renderCompliance();};}
+  const b=$('#f-csv'); if(b)b.onclick=()=>{
+    const H=['Class','Flange','CL','Material_group','Worst_T_C','Worst_P_barg','Rated_barg','Margin_pct','Status','Suggested_class','Remark'];
+    const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+    const lines=[H.join(',')].concat(rows0.map(r=>[r.class,r.flange,r.class_number,r.material_group,
+      r.worst?r.worst.temp_C:'',r.worst?r.worst.press_barg:'',r.worst?r.worst.rated_barg:'',
+      r.margin_pct,r.status,r.suggested_class,r.remark].map(q).join(',')));
+    dl('b16.5_flange_adequacy.csv','\ufeff'+lines.join('\r\n'),'text/csv');
+  };
+}
+function flgWarn(){
+  if(!FLG||!(FLG.material_groups||[]).length)
+    return `<div class="notebox">⚠️ No flange datapack loaded — place your <code>flanges.json</code> at <code>web/data/</code> or load it via <b>Data → Load my data → ③</b>.</div>`;
+  if(FLG.meta&&FLG.meta.SYNTHETIC)
+    return `<div class="notebox">⚠️ Using <b>SYNTHETIC</b> demo flange ratings (not real ASME data). Load your real B16.5 datapack for engineering use.</div>`;
+  return '';
+}
+function flgMeta(){
+  const m=FLG&&FLG.meta||{};
+  return `${esc(m.standard||'—')} ${esc(m.edition?('ed. '+m.edition):'')} · ${(FLG.material_groups||[]).length} material groups`;
+}
+function renderFlangeAdequacy(){
+  const rows0=flangeAdequacy(DATA,FLG);
+  const rows=rows0.filter(r=>flgFilter==='all'||r.status===flgFilter);
+  const n={adequate:0,inadequate:0,'not-evaluated':0};
+  rows0.forEach(r=>n[r.status]=(n[r.status]||0)+1);
+  const html=`<h2>Flange rating adequacy — ASME B16.5</h2>
+   <div class="sub">Each class's <b>CL.###</b> is checked against its own P–T design points using the loaded rating datapack (${flgMeta()}). Linear interpolation per B16.5 para. 2.1; anything unresolvable is <b>not-evaluated</b>, never a silent pass.</div>
+   ${flgWarn()}
+   <div class="cards">
+     <div class="kv"><div class="k">Adequate</div><div class="v" style="color:var(--acc2)">${n.adequate||0}</div></div>
+     <div class="kv"><div class="k">Inadequate</div><div class="v sev-error">${n.inadequate||0}</div></div>
+     <div class="kv"><div class="k">Not evaluated</div><div class="v sev-warning">${n['not-evaluated']||0}</div></div>
+     <div class="kv"><div class="k">Classes</div><div class="v">${rows0.length}</div></div>
+   </div>
+   <div class="toolbar">
+     <select id="fsev"><option value="all">all</option><option value="inadequate">inadequate</option><option value="adequate">adequate</option><option value="not-evaluated">not-evaluated</option></select>
+     <button id="f-csv" class="sec">Export CSV</button><span class="count">${rows.length} rows</span>
+   </div>
+   <table><thead><tr><th>Class</th><th>Flange</th><th>CL</th><th>Group</th><th>Worst point</th><th>Rated (bar)</th><th>Margin %</th><th>Status</th><th>Suggest</th><th>Remark</th></tr></thead>
+   <tbody>${rows.map(r=>`<tr>
+     <td>${esc(r.class)}</td><td>${esc(r.flange)}</td><td>${r.class_number??''}</td><td>${esc(r.material_group||'')}</td>
+     <td>${r.worst?esc(r.worst.temp_C+'°C / '+r.worst.press_barg+' barg'):''}</td>
+     <td>${r.worst&&r.worst.rated_barg!=null?r.worst.rated_barg:''}</td>
+     <td>${r.margin_pct??''}</td>
+     <td class="${r.status==='inadequate'?'sev-error':(r.status==='adequate'?'':'sev-warning')}">${r.status}</td>
+     <td>${r.suggested_class?('CL.'+r.suggested_class):''}</td><td class="muted">${esc(r.remark||'')}</td></tr>`).join('')}</tbody></table>`;
+  return {html, rows0};
+}
+
+// ---------- Flange Rating tab (lookup + class selection) ----------
+async function renderFlange(){
+  await loadDB();
+  const m=$('#flange');
+  m.innerHTML=`<h2 style="margin-top:0">Flange Rating — ASME B16.5 P–T lookup</h2>
+   <div class="sub">Datapack: ${flgMeta()}${FLG.meta&&FLG.meta._source?' · source: '+esc(FLG.meta._source):''}</div>
+   ${flgWarn()}
+   <div class="toolbar" style="flex-wrap:wrap;gap:8px">
+     <input id="fl-mat" type="text" placeholder="Material or group (e.g. A105, A216 WCB, 1.1)" style="width:280px">
+     <input id="fl-T" type="number" placeholder="Design T (°C)" style="width:130px">
+     <input id="fl-P" type="number" placeholder="Design P (barg)" style="width:140px">
+     <button id="fl-go">Evaluate</button>
+   </div>
+   <div id="fl-res"></div>`;
+  $('#fl-go').onclick=()=>{
+    const g=findGroup(FLG,$('#fl-mat').value);
+    const T=parseFloat($('#fl-T').value), P=parseFloat($('#fl-P').value);
+    const box=$('#fl-res');
+    if(!g){box.innerHTML=`<div class="notebox">Material group not resolved — enter an ASTM spec (e.g. A105) or a group code (e.g. 1.1).</div>`;return;}
+    if(!isFinite(T)){box.innerHTML=`<div class="notebox">Enter a design temperature.</div>`;return;}
+    const classes=Object.keys(g.ratings||{}).map(Number).sort((a,b)=>a-b);
+    const rows=classes.map(cls=>{
+      const r=ratedPressure(g,cls,T);
+      const ok=(r!=null&&isFinite(P))?(r>=P):null;
+      return `<tr><td>CL.${cls}</td><td>${r==null?'<span class="sev-warning">not rated at this T</span>':r.toFixed(2)+' bar'}</td>
+        <td>${ok==null?'':(ok?'<span style="color:var(--acc2)">covers design P</span>':'<span class="sev-error">below design P</span>')}</td></tr>`;
+    }).join('');
+    const sug=isFinite(P)?selectClass(g,[[T,P]],classes):null;
+    box.innerHTML=`<div class="sub">Group <b>${esc(g.group)}</b> — ${esc(g.description||'')} · specs: ${esc((g.specs||[]).join(', '))}</div>
+     ${isFinite(P)?`<div class="cards"><div class="kv"><div class="k">Smallest adequate class @ ${T}°C / ${P} barg</div><div class="v">${sug?('CL.'+sug):'<span class=sev-error>none listed</span>'}</div></div></div>`:''}
+     <table style="max-width:560px"><thead><tr><th>Class</th><th>Rated pressure @ ${T}°C</th><th>vs design P</th></tr></thead><tbody>${rows}</tbody></table>
+     ${g.notes?`<div class="notebox" style="border-left-color:var(--edge)">Table notes (verbatim): ${esc(g.notes)}</div>`:''}`;
   };
 }
 
@@ -427,7 +529,7 @@ async function renderSpecBuilder(){
 }
 
 // ---------- Get-started data modal ----------
-let pendPMS=null, pendMAT=null;
+let pendPMS=null, pendMAT=null, pendFLG=null;
 function hasData(){return (DATA.classes||[]).length>0;}
 function mShowStep(n){$('#modal-step1').style.display=n===1?'':'none';$('#modal-step2').style.display=n===2?'':'none';}
 function openModal(step1){ $('#modal').classList.add('open'); mShowStep(step1?1:2);
@@ -452,7 +554,11 @@ $('#in-pms').onchange=e=>{const f=e.target.files[0];if(f)readJSON(f,d=>{pendPMS=
   $('#st-pms').innerHTML=`<span class="ok">✓ ${esc((d.meta&&d.meta.company)||'loaded')} · ${(d.classes||[]).length} classes</span>`;refreshRun();});};
 $('#in-mat').onchange=e=>{const f=e.target.files[0];if(f)readJSON(f,d=>{pendMAT=d;
   const n=(d.materials||[]).length; $('#st-mat').innerHTML=`<span class="ok">✓ ${n} materials${(d.meta&&d.meta.SYNTHETIC)?' (synthetic)':''}</span>`;});};
+$('#in-flg').onchange=e=>{const f=e.target.files[0];if(f)readJSON(f,d=>{
+  if(!d||!Array.isArray(d.material_groups)){alert('Not a flange-master datapack (missing material_groups)');return;}
+  pendFLG=d; const n=d.material_groups.length;
+  $('#st-flg').innerHTML=`<span class="ok">✓ ${n} material groups${(d.meta&&d.meta.SYNTHETIC)?' (synthetic)':''} · ${esc((d.meta&&d.meta.standard)||'')} ${esc((d.meta&&d.meta.edition)||'')}</span>`;});};
 $('#modal-run').onclick=async()=>{ if(!pendPMS)return; await loadDB();
-  if(pendMAT)MATDB=pendMAT; setData(pendPMS); $('#modal').classList.remove('open'); };
+  if(pendMAT)MATDB=pendMAT; if(pendFLG)FLG=pendFLG; setData(pendPMS); $('#modal').classList.remove('open'); };
 
 boot();

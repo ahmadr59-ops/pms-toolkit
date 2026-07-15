@@ -124,3 +124,22 @@ def test_real_b16_5_datapack_if_installed():
     assert find_group(pack, "A182 F316")  is not None
     g27 = find_group(pack, "2.7")
     assert "150" not in g27["ratings"]               # 310H has no CL150 (per standard)
+
+
+def test_real_b16_47_datapack_if_installed():
+    """Spot values hand-read from the licensed ASME B16.47-2025 tables."""
+    import os, pytest
+    from pmskit.rating import _ROOT, rated_pressure
+    if not os.path.exists(os.path.join(_ROOT, "datapacks", "flanges_b16_47.json")):
+        pytest.skip("no private B16.47 datapack")
+    pack = load_component_pack("flanges_b16_47")
+    assert pack["meta"]["standard"] == "ASME B16.47"
+    assert len(pack["material_groups"]) == 27
+    g = find_group(pack, "A105")
+    assert g["group"] == "1.1"
+    assert rated_pressure(g, 75, 38) == 9.8       # Table 3
+    assert rated_pressure(g, 900, 38) == 153.1    # Table 3
+    assert rated_pressure(g, 75, 375) is None     # class 75 not rated above 350
+    d = pack["dims"]["A:150"]
+    row = next(r for r in d["rows"] if r["nps"] == "26")
+    assert row["values"]["O.D. of Flange, O"] == 870.0

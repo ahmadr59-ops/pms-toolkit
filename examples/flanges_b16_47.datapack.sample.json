@@ -1,0 +1,121 @@
+{
+ "meta": {
+  "schema": "flange-master v1",
+  "standard": "ASME B16.47",
+  "edition": "SYNTHETIC",
+  "SYNTHETIC": true,
+  "note": "SYNTHETIC demo values only - NOT real ASME data. Replace locally with datapacks/flanges_b16_47.json.",
+  "pressure_units": "barg",
+  "temp_units": "C",
+  "dim_units": "mm",
+  "classes": [
+   75,
+   150,
+   300,
+   400,
+   600,
+   900
+  ],
+  "nps_range": [
+   26,
+   60
+  ]
+ },
+ "material_groups": [
+  {
+   "group": "1.1",
+   "description": "SYNTHETIC CS group",
+   "specs": [
+    "A105",
+    "A216 WCB"
+   ],
+   "max_temp_C": 538,
+   "ratings": {
+    "75": [
+     [
+      38,
+      9.0
+     ],
+     [
+      300,
+      5.0
+     ],
+     [
+      350,
+      3.0
+     ]
+    ],
+    "150": [
+     [
+      38,
+      19.0
+     ],
+     [
+      300,
+      10.0
+     ],
+     [
+      538,
+      1.4
+     ]
+    ],
+    "300": [
+     [
+      38,
+      50.0
+     ],
+     [
+      300,
+      39.0
+     ],
+     [
+      538,
+      8.0
+     ]
+    ],
+    "400": [
+     [
+      38,
+      67.0
+     ],
+     [
+      300,
+      52.0
+     ],
+     [
+      538,
+      11.0
+     ]
+    ],
+    "600": [
+     [
+      38,
+      100.0
+     ],
+     [
+      300,
+      78.0
+     ],
+     [
+      538,
+      16.0
+     ]
+    ],
+    "900": [
+     [
+      38,
+      150.0
+     ],
+     [
+      300,
+      117.0
+     ],
+     [
+      538,
+      24.0
+     ]
+    ]
+   }
+  }
+ ]
+}

@@ -28,7 +28,7 @@ import re
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PACKS = ("flanges", "fittings", "valves", "gaskets", "bolting", "materials")
+PACKS = ("flanges", "flanges_b16_47", "fittings", "valves", "gaskets", "bolting", "materials")
 CORE = {"schedules": os.path.join(ROOT, "data", "schedules.json")}
 
 

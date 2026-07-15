@@ -288,20 +288,24 @@ function renderDeviation(){
 
 // ---------- Thickness (ASME B31.3) ----------
 let SCHED=null, MATDB=null, THK=null, thkFilter='all';
-let FLG=null, flgFilter='all';
+let FLG=null, FLG47=null, flgFilter='all';
 async function loadDB(){
   if(SCHED&&MATDB&&FLG) return;
   const emb=n=>typeof loadEmbeddedDatapack==='function'?loadEmbeddedDatapack(n):null;
   if(!SCHED) SCHED=emb('schedules');
   if(!MATDB) MATDB=emb('materials');
   if(!FLG)   FLG=emb('flanges');
+  if(!FLG47) FLG47=emb('flanges_b16_47');
   if(!SCHED){try{const a=await fetch('data/schedules.json');SCHED=a.ok?await a.json():null;}catch(e){}}
   if(!MATDB){try{const b=await fetch('data/materials.json');if(b.ok)MATDB=await b.json();}catch(e){}}
   if(!MATDB){try{const b=await fetch('data/materials.sample.json');if(b.ok)MATDB=await b.json();}catch(e){}}
   if(!FLG){try{const c=await fetch('data/flanges.json');if(c.ok)FLG=await c.json();}catch(e){}}
+  if(!FLG47){try{const c=await fetch('data/flanges_b16_47.json');if(c.ok)FLG47=await c.json();}catch(e){}}
+  if(!FLG47){try{const c=await fetch('../examples/flanges_b16_47.datapack.sample.json');if(c.ok)FLG47=await c.json();}catch(e){}}
   if(!FLG){try{const c=await fetch('../examples/flanges.datapack.sample.json');if(c.ok)FLG=await c.json();}catch(e){}}
   SCHED=SCHED||{pipe:{},aliases:{}}; MATDB=MATDB||{meta:{},materials:[]};
   FLG=FLG||{meta:{},material_groups:[]};
+  FLG47=FLG47||{meta:{},material_groups:[]};
 }
 async function renderThickness(){
   await loadDB();
@@ -437,18 +441,22 @@ function renderFlangeAdequacy(){
 async function renderFlange(){
   await loadDB();
   const m=$('#flange');
-  m.innerHTML=`<h2 style="margin-top:0">Flange Rating — ASME B16.5 P–T lookup</h2>
-   <div class="sub">Datapack: ${flgMeta()}${FLG.meta&&FLG.meta._source?' · source: '+esc(FLG.meta._source):''}</div>
+  const curPack=()=>($('#fl-std')&&$('#fl-std').value==='47')?FLG47:FLG;
+  m.innerHTML=`<h2 style="margin-top:0">Flange Rating — P–T lookup</h2>
+   <div class="sub">B16.5: ${flgMeta()} · B16.47: ${(FLG47.meta&&FLG47.meta.standard)?esc((FLG47.meta.standard||'')+' ed. '+(FLG47.meta.edition||'')+' · '+(FLG47.material_groups||[]).length+' groups'):'not loaded'}</div>
    ${flgWarn()}
    <div class="toolbar" style="flex-wrap:wrap;gap:8px">
+     <select id="fl-std"><option value="5">ASME B16.5 (NPS ≤ 24)</option><option value="47">ASME B16.47 (NPS 26–60)</option></select>
      <input id="fl-mat" type="text" placeholder="Material or group (e.g. A105, A216 WCB, 1.1)" style="width:280px">
      <input id="fl-T" type="number" placeholder="Design T (°C)" style="width:130px">
      <input id="fl-P" type="number" placeholder="Design P (barg)" style="width:140px">
      <button id="fl-go">Evaluate</button>
    </div>
-   <div id="fl-res"></div>`;
+   <div id="fl-res"></div>
+   <div id="fl-dims-wrap"></div>`;
+  renderFlangeDims();
   $('#fl-go').onclick=()=>{
-    const g=findGroup(FLG,$('#fl-mat').value);
+    const g=findGroup(curPack(),$('#fl-mat').value);
     const T=parseFloat($('#fl-T').value), P=parseFloat($('#fl-P').value);
     const box=$('#fl-res');
     if(!g){box.innerHTML=`<div class="notebox">Material group not resolved — enter an ASTM spec (e.g. A105) or a group code (e.g. 1.1).</div>`;return;}
@@ -466,6 +474,57 @@ async function renderFlange(){
      <table style="max-width:560px"><thead><tr><th>Class</th><th>Rated pressure @ ${T}°C</th><th>vs design P</th></tr></thead><tbody>${rows}</tbody></table>
      ${g.notes?`<div class="notebox" style="border-left-color:var(--edge)">Table notes (verbatim): ${esc(g.notes)}</div>`:''}`;
   };
+}
+
+// ---------- Flange dimensions & bolting chart (B16.5 Tables 4,5,7-22) ----------
+function renderFlangeDims(){
+  const w=$('#fl-dims-wrap'); if(!w) return;
+  if(!FLG||!FLG.drilling){ w.innerHTML=`<div class="notebox">Dimension tables not loaded — regenerate your flange datapack with <code>tools/b16_5_dims_extract.py</code>.</div>`; return; }
+  const classes=Object.keys(FLG.drilling).sort((a,b)=>a-b)
+    .concat(Object.keys((FLG47&&FLG47.dims)||{}).map(k=>'B16.47 '+k).sort());
+  w.innerHTML=`<hr style="border-color:var(--edge);margin:22px 0">
+   <h2>Dimensions &amp; bolting chart — B16.5-2025 Tables 4, 5, 7–22</h2>
+   <div class="toolbar">
+     <select id="fd-cls">${classes.map(c=>`<option>${c}</option>`).join('')}</select>
+     <select id="fd-nps"></select>
+   </div><div id="fd-out"></div>`;
+  const is47=c=>c.startsWith('B16.47 ');
+  const rows47=c=>((FLG47.dims||{})[c.replace('B16.47 ','')]||{rows:[]}).rows;
+  const fillN=()=>{const c=$('#fd-cls').value;
+    const rows=is47(c)?rows47(c):(FLG.drilling[c].rows||[]);
+    $('#fd-nps').innerHTML=rows.map(r=>`<option>${r.nps}</option>`).join('');
+    show();};
+  const tbl=(title,src,obj,notes)=>{
+    if(!obj) return `<h3>${title}</h3><div class="muted">no row for this size</div>`;
+    return `<h3 style="margin-bottom:4px">${title} <span class="muted" style="font-size:12px">(${esc(src)}, verbatim column labels)</span></h3>
+     <table style="max-width:760px"><tbody>${Object.entries(obj.values||{}).map(([k,v])=>
+       `<tr><td class="muted" style="width:65%">${esc(k)}</td><td><b>${esc(v)}</b></td></tr>`).join('')}</tbody></table>`;
+  };
+  const show=()=>{const c=$('#fd-cls').value, n=$('#fd-nps').value;
+    if(is47(c)){
+      const key=c.replace('B16.47 ','');
+      const t=(FLG47.dims||{})[key]||{};
+      const row=(t.rows||[]).find(r=>r.nps===n);
+      $('#fd-out').innerHTML=
+        (t.DAMAGED_SOURCE?`<div class="notebox">⚠️ ${esc(t.DAMAGED_SOURCE)}</div>`:'')+
+        tbl(`B16.47 Series ${esc(t.series)} — CL${esc(t.class)} NPS ${n} (dims + drilling merged)`,t.source_table,row)+
+        (t.notes?`<div class="notebox" style="border-left-color:var(--edge)">Table notes (verbatim): ${esc(t.notes)}</div>`:'');
+      return;
+    }
+    const find=sec=>((FLG[sec][c]||{}).rows||[]).find(r=>r.nps===n);
+    const drl=(FLG.drilling[c].rows||[]).find(r=>r.nps===n);
+    const dim=((FLG.dims||{})[c]||{rows:[]}).rows.find(r=>r.nps===n);
+    const fac=((FLG.facings||{}).rows||[]).find(r=>r.nps===n);
+    const noteRef=drl&&Object.values(drl.values||{}).every(v=>String(v).match(/^\(\d+\)$/));
+    $('#fd-out').innerHTML=
+      (noteRef?`<div class="notebox">All values are a note reference — see table notes below (e.g. this size uses another class's dimensions per the standard).</div>`:'')+
+      tbl(`Drilling / bolting — CL${c} NPS ${n}`,(FLG.drilling[c]||{}).source_table,drl)+
+      tbl(`Flange dimensions — CL${c} NPS ${n}`,((FLG.dims||{})[c]||{}).source_table,dim)+
+      tbl(`Facing dimensions — NPS ${n}`,'Table 4',fac)+
+      ((FLG.drilling[c]||{}).notes?`<div class="notebox" style="border-left-color:var(--edge)">Drilling table notes (verbatim): ${esc(FLG.drilling[c].notes)}</div>`:'')+
+      (((FLG.dims||{})[c]||{}).notes?`<div class="notebox" style="border-left-color:var(--edge)">Dimension table notes (verbatim): ${esc(FLG.dims[c].notes)}</div>`:'');
+  };
+  $('#fd-cls').onchange=fillN; $('#fd-nps').onchange=show; fillN();
 }
 
 // ---------- Spec Builder (ASME B31.3) ----------

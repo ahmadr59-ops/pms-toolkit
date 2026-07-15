@@ -31,7 +31,7 @@ _ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__
 #: Standard flange class series (public fact, ASME B16.5).
 STANDARD_CLASSES = [150, 300, 400, 600, 900, 1500, 2500]
 
-_COMPONENT_PACKS = ("flanges", "fittings", "valves", "gaskets", "bolting")
+_COMPONENT_PACKS = ("flanges", "flanges_b16_47", "fittings", "valves", "gaskets", "bolting")
 
 
 def load_component_pack(name: str, datapack: Optional[str] = None) -> Dict[str, Any]:

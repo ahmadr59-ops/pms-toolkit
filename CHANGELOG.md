@@ -1,6 +1,13 @@
 # Changelog
 
 ## Unreleased (0.8.0 — component datapacks, Phase 0)
+- **ASME B16.47-2025 datapack** (`tools/b16_47_extract.py` -> git-ignored
+  `datapacks/flanges_b16_47.json`): 27 material groups (2,975 rating points,
+  classes 75-900), Series A/B dimension+drilling tables (NPS 26-60), RTJ
+  facings keyed by groove number, verbatim bolting sections. Damaged source
+  pages are flagged `DAMAGED_SOURCE` (never silently dropped) and rating
+  anomalies are listed in `meta.verify_flags`. Flange Rating tab gained a
+  B16.5 / B16.47 standard selector.
 - **Five component datapack formats** with JSON Schemas (`schema/datapacks/`) and
   synthetic samples (`examples/`): flanges (B16.5 P–T ratings + dimensions +
   bolting chart), fittings (B16.9/B16.11/MSS SP-97), valves (selection matrix +

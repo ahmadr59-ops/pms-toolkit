@@ -1,0 +1,80 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/ahmadr59-ops/pms-toolkit/schema/datapacks/flange-master.schema.json",
+  "title": "flange-master v1",
+  "description": "Flange datapack: ASME B16.5/B16.47 pressure-temperature ratings per material group, flange dimensions and bolting chart. Real values are copyrighted ASME data and must live only in a private, git-ignored datapack.",
+  "type": "object",
+  "required": ["meta", "material_groups"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["schema", "standard"],
+      "properties": {
+        "schema": { "const": "flange-master v1" },
+        "standard": { "type": "string", "description": "e.g. ASME B16.5" },
+        "edition": { "type": "string", "description": "e.g. 2020 — always record the edition used" },
+        "SYNTHETIC": { "type": "boolean" },
+        "note": { "type": "string" },
+        "pressure_units": { "enum": ["barg", "bar"] },
+        "temp_units": { "const": "C" },
+        "dim_units": { "const": "mm" }
+      }
+    },
+    "material_groups": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["group", "ratings"],
+        "properties": {
+          "group": { "type": "string", "description": "B16.5 material group, e.g. 1.1, 2.2" },
+          "description": { "type": "string" },
+          "specs": {
+            "type": "array", "items": { "type": "string" },
+            "description": "Forging/casting/plate specs covered, e.g. A105, A216 WCB, A182 F316"
+          },
+          "max_temp_C": { "type": "number" },
+          "notes": { "type": "string" },
+          "ratings": {
+            "type": "object",
+            "description": "Keyed by class number as string ('150'...'2500'). Value = list of [temp_C, max_working_pressure] points, ascending temperature. Below the first listed temperature the rating is constant; above the last the class is not rated.",
+            "patternProperties": {
+              "^[0-9]{2,4}$": {
+                "type": "array",
+                "items": {
+                  "type": "array", "minItems": 2, "maxItems": 2,
+                  "items": { "type": "number" }
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    "dimensions": {
+      "type": "array",
+      "description": "Flange dimensions incl. the bolting chart (bolt count/size are part of B16.5 dimension tables).",
+      "items": {
+        "type": "object",
+        "required": ["class", "nps"],
+        "properties": {
+          "std": { "type": "string" },
+          "class": { "type": "integer" },
+          "nps": { "type": "string" },
+          "type": { "type": "string", "description": "WN, SO, BL, SW, TH, LJ" },
+          "facing": { "type": "string", "description": "RF, FF, RTJ" },
+          "flange_od_mm": { "type": ["number", "null"] },
+          "thk_min_mm": { "type": ["number", "null"] },
+          "raised_face_od_mm": { "type": ["number", "null"] },
+          "bolt_circle_mm": { "type": ["number", "null"] },
+          "n_bolts": { "type": ["integer", "null"] },
+          "bolt_dia_in": { "type": ["string", "null"], "description": "e.g. 5/8" },
+          "bolt_hole_mm": { "type": ["number", "null"] },
+          "length_thru_hub_mm": { "type": ["number", "null"] },
+          "ring_no": { "type": ["string", "null"], "description": "RTJ ring number, e.g. R-23" },
+          "weight_kg": { "type": ["number", "null"] }
+        }
+      }
+    }
+  }
+}

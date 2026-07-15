@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "schema": "bolting-master v1",
+    "edition": "SYNTHETIC",
+    "SYNTHETIC": true,
+    "note": "Material pairs reflect common industry practice; temperature limits and torque values here are SYNTHETIC/ILLUSTRATIVE — verify against ASTM specs and ASME PCC-1 before use. Replace locally with your own datapack (datapacks/bolting.json).",
+    "temp_units": "C"
+  },
+  "materials": [
+    { "stud": "ASTM A193 B7", "nut": "ASTM A194 2H",
+      "min_temp_C": -29, "max_temp_C": 400,
+      "sour_service_ok": false, "sour_alternative": "A193 B7M / A194 2HM (NACE MR0175/ISO 15156, 22 HRC max)",
+      "coating": "hot-dip galvanized (onshore) / PTFE-coated (offshore)",
+      "b16_5_group_compat": ["1.1"], "notes": "default CS bolting" },
+    { "stud": "ASTM A320 L7", "nut": "ASTM A194 7 (S3 impact tested)",
+      "min_temp_C": -101, "max_temp_C": 400,
+      "sour_service_ok": false, "sour_alternative": "A320 L7M / A194 7M",
+      "coating": "PTFE-coated", "b16_5_group_compat": ["1.1"], "notes": "low-temperature service" },
+    { "stud": "ASTM A193 B8M cl.2", "nut": "ASTM A194 8M",
+      "min_temp_C": -254, "max_temp_C": 500,
+      "sour_service_ok": true, "sour_alternative": null,
+      "coating": null, "b16_5_group_compat": ["2.2"], "notes": "austenitic bolting; watch galling — use anti-seize" }
+  ],
+  "torque": [
+    { "basis": "ASME PCC-1 methodology — SYNTHETIC target stress", "bolt_dia_in": "5/8",
+      "gasket_type": "SPIRAL WOUND", "target_bolt_stress_MPa": 300, "lubricant_K": 0.16, "torque_Nm": 170, "notes": "" },
+    { "basis": "ASME PCC-1 methodology — SYNTHETIC target stress", "bolt_dia_in": "3/4",
+      "gasket_type": "SPIRAL WOUND", "target_bolt_stress_MPa": 300, "lubricant_K": 0.16, "torque_Nm": 290, "notes": "" },
+    { "basis": "ASME PCC-1 methodology — SYNTHETIC target stress", "bolt_dia_in": "1",
+      "gasket_type": "SPIRAL WOUND", "target_bolt_stress_MPa": 300, "lubricant_K": 0.16, "torque_Nm": 700, "notes": "" }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/ahmadr59-ops/pms-toolkit/schema/datapacks/bolting-master.schema.json",
+  "title": "bolting-master v1",
+  "description": "Bolting datapack: stud/nut material pairs (ASTM A193/A194/A320) with temperature limits and NACE MR0175/ISO 15156 sour-service alternatives, plus optional bolt-torque guidance (ASME PCC-1 methodology).",
+  "type": "object",
+  "required": ["meta", "materials"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["schema"],
+      "properties": {
+        "schema": { "const": "bolting-master v1" },
+        "edition": { "type": "string" },
+        "SYNTHETIC": { "type": "boolean" },
+        "note": { "type": "string" },
+        "temp_units": { "const": "C" }
+      }
+    },
+    "materials": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["stud", "nut"],
+        "properties": {
+          "stud": { "type": "string", "description": "e.g. ASTM A193 B7" },
+          "nut": { "type": "string", "description": "e.g. ASTM A194 2H" },
+          "min_temp_C": { "type": ["number", "null"] },
+          "max_temp_C": { "type": ["number", "null"] },
+          "sour_service_ok": { "type": ["boolean", "null"] },
+          "sour_alternative": { "type": ["string", "null"], "description": "e.g. A193 B7M / A194 2HM per NACE MR0175" },
+          "coating": { "type": ["string", "null"], "description": "e.g. hot-dip galvanized, PTFE (xylan)" },
+          "b16_5_group_compat": {
+            "type": "array", "items": { "type": "string" },
+            "description": "Flange material groups this pair is normally specified with"
+          },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "torque": {
+      "type": "array",
+      "description": "Assembly torque guidance per bolt size (ASME PCC-1 methodology; values depend on target stress, lubricant K and gasket type — record all three).",
+      "items": {
+        "type": "object",
+        "required": ["bolt_dia_in", "torque_Nm"],
+        "properties": {
+          "basis": { "type": "string" },
+          "bolt_dia_in": { "type": "string" },
+          "gasket_type": { "type": ["string", "null"] },
+          "target_bolt_stress_MPa": { "type": ["number", "null"] },
+          "lubricant_K": { "type": ["number", "null"] },
+          "torque_Nm": { "type": "number" },
+          "notes": { "type": "string" }
+        }
+      }
+    }
+  }
+}

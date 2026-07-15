@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/ahmadr59-ops/pms-toolkit/schema/datapacks/fitting-master.schema.json",
+  "title": "fitting-master v1",
+  "description": "Fitting datapack: ASME B16.9 buttweld, ASME B16.11 socket-weld/threaded, MSS SP-97 branch outlets. Real dimension tables are copyrighted and must live only in a private, git-ignored datapack.",
+  "type": "object",
+  "required": ["meta"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["schema"],
+      "properties": {
+        "schema": { "const": "fitting-master v1" },
+        "edition": { "type": "string" },
+        "SYNTHETIC": { "type": "boolean" },
+        "note": { "type": "string" },
+        "dim_units": { "const": "mm" }
+      }
+    },
+    "buttweld": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "nps"],
+        "properties": {
+          "std": { "type": "string", "default": "ASME B16.9" },
+          "type": { "type": "string", "description": "ELBOW 90 LR, ELBOW 45 LR, TEE EQUAL, TEE RED, RED CON, RED ECC, CAP, ..." },
+          "nps": { "type": "string" },
+          "nps_branch": { "type": ["string", "null"], "description": "outlet/branch size for reducing tees & reducers" },
+          "dims": {
+            "type": "object",
+            "description": "B16.9 letter dimensions in mm, e.g. center_to_end_A, center_to_end_C, length_H, cap_E",
+            "additionalProperties": { "type": ["number", "null"] }
+          },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "socket_threaded": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "class", "end", "nps"],
+        "properties": {
+          "std": { "type": "string", "default": "ASME B16.11" },
+          "type": { "type": "string" },
+          "class": { "type": "integer", "enum": [2000, 3000, 6000, 9000] },
+          "end": { "enum": ["SW", "THD"] },
+          "nps": { "type": "string" },
+          "dims": { "type": "object", "additionalProperties": { "type": ["number", "null"] } },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "olets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "run_nps", "branch_nps"],
+        "properties": {
+          "std": { "type": "string", "default": "MSS SP-97" },
+          "type": { "type": "string", "description": "WELDOLET, SOCKOLET, THREADOLET, ..." },
+          "run_nps": { "type": "string" },
+          "branch_nps": { "type": "string" },
+          "class": { "type": ["integer", "null"], "description": "for SOL/TOL: 3000/6000" },
+          "dims": { "type": "object", "additionalProperties": { "type": ["number", "null"] } },
+          "notes": { "type": "string" }
+        }
+      }
+    }
+  }
+}

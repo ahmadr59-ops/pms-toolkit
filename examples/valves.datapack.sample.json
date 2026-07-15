@@ -1,0 +1,41 @@
+{
+  "meta": {
+    "schema": "valve-master v1",
+    "edition": "SYNTHETIC",
+    "SYNTHETIC": true,
+    "note": "SYNTHETIC / ILLUSTRATIVE selection matrix and face-to-face values for demo only. Replace locally with your own datapack (datapacks/valves.json). P-T ratings intentionally NOT here — they come from the flange datapack (B16.34 standard class).",
+    "dim_units": "mm"
+  },
+  "selection": [
+    { "type": "GATE", "design_std": "API 602", "size_from": "1/2", "size_to": "1-1/2",
+      "classes": [800], "ends": "SW", "body": "A105", "trim": "API 600 Trim No. 8 (13Cr/HF)",
+      "bonnet": "bolted, OS&Y", "operation": "HW", "test_std": "API 598",
+      "sour_service": false, "notes": "" },
+    { "type": "GATE", "design_std": "API 600", "size_from": "2", "size_to": "24",
+      "classes": [150, 300, 600], "ends": "FLG RF", "body": "A216 WCB", "trim": "API 600 Trim No. 8 (13Cr/HF)",
+      "bonnet": "bolted, OS&Y", "operation": "HW; GO >= NPS 14 CL150 / NPS 8 CL600", "test_std": "API 598",
+      "sour_service": false, "notes": "" },
+    { "type": "GLOBE", "design_std": "BS 1873", "size_from": "2", "size_to": "8",
+      "classes": [150, 300], "ends": "FLG RF", "body": "A216 WCB", "trim": "13Cr / HF seat",
+      "bonnet": "bolted, OS&Y", "operation": "HW", "test_std": "API 598",
+      "sour_service": false, "notes": "" },
+    { "type": "CHECK SWING", "design_std": "API 594 / BS 1868", "size_from": "2", "size_to": "24",
+      "classes": [150, 300, 600], "ends": "FLG RF", "body": "A216 WCB", "trim": "13Cr",
+      "bonnet": "bolted cover", "operation": "-", "test_std": "API 598",
+      "sour_service": false, "notes": "" },
+    { "type": "BALL", "design_std": "API 6D", "size_from": "2", "size_to": "16",
+      "classes": [150, 300], "ends": "FLG RF", "body": "A216 WCB", "trim": "SS316 ball / RPTFE seat",
+      "bonnet": "-", "operation": "lever <= NPS 4; GO above", "test_std": "API 6D / API 598",
+      "sour_service": false, "notes": "fire-safe API 607" },
+    { "type": "BUTTERFLY", "design_std": "API 609 cat. B", "size_from": "3", "size_to": "24",
+      "classes": [150], "ends": "LUG", "body": "A216 WCB", "trim": "SS316 disc / EPDM seat",
+      "bonnet": "-", "operation": "lever <= NPS 6; GO above", "test_std": "API 598",
+      "sour_service": false, "notes": "water service only (SYNTHETIC)" }
+  ],
+  "face_to_face": [
+    { "std": "ASME B16.10", "type": "GATE", "pattern": "solid wedge", "class": 150, "nps": "6", "ff_mm": 267.0, "notes": "" },
+    { "std": "ASME B16.10", "type": "GATE", "pattern": "solid wedge", "class": 300, "nps": "6", "ff_mm": 403.0, "notes": "" },
+    { "std": "ASME B16.10", "type": "GLOBE", "pattern": "straight", "class": 150, "nps": "6", "ff_mm": 406.0, "notes": "" },
+    { "std": "ASME B16.10", "type": "CHECK SWING", "pattern": "-", "class": 150, "nps": "6", "ff_mm": 356.0, "notes": "" }
+  ]
+}

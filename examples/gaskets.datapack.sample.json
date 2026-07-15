@@ -1,0 +1,35 @@
+{
+  "meta": {
+    "schema": "gasket-master v1",
+    "edition": "SYNTHETIC",
+    "SYNTHETIC": true,
+    "note": "SYNTHETIC / ILLUSTRATIVE dimensions for demo only — NOT real ASME data. Replace locally with your own datapack (datapacks/gaskets.json).",
+    "dim_units": "mm"
+  },
+  "gaskets": [
+    { "std": "ASME B16.20", "type": "SPIRAL WOUND", "class": 150, "nps": "2",
+      "dims": { "inner_ring_id_mm": 55.0, "winding_id_mm": 69.0, "winding_od_mm": 85.0, "outer_ring_od_mm": 105.0, "thickness_mm": 4.5 },
+      "construction": "SS316L winding / flexible graphite filler / CS outer ring / SS316 inner ring",
+      "temp_range_C": [-200, 450], "notes": "" },
+    { "std": "ASME B16.20", "type": "SPIRAL WOUND", "class": 150, "nps": "6",
+      "dims": { "inner_ring_id_mm": 157.0, "winding_id_mm": 176.0, "winding_od_mm": 194.0, "outer_ring_od_mm": 222.0, "thickness_mm": 4.5 },
+      "construction": "SS316L winding / flexible graphite filler / CS outer ring / SS316 inner ring",
+      "temp_range_C": [-200, 450], "notes": "" },
+    { "std": "ASME B16.20", "type": "RTJ OCTAGONAL", "class": 600, "nps": "6",
+      "dims": { "ring_no": "R-45", "pitch_dia_mm": 211.0, "width_mm": 12.0, "height_mm": 17.0 },
+      "construction": "soft iron, max hardness 90 HB",
+      "temp_range_C": [-29, 538], "notes": "" },
+    { "std": "ASME B16.21", "type": "CNAF/FLAT", "class": 150, "nps": "6",
+      "dims": { "id_mm": 168.0, "od_mm": 222.0, "thickness_mm": 1.5 },
+      "construction": "compressed non-asbestos fiber",
+      "temp_range_C": [-40, 200], "notes": "utility water service" }
+  ],
+  "selection": [
+    { "service": "hydrocarbon liquid/gas, steam — general", "facing": "RF", "classes": [150, 300, 600],
+      "temp_max_C": 450, "type": "SPIRAL WOUND", "notes": "inner ring mandatory for PTFE filler and NPS >= 24 (convention)" },
+    { "service": "high pressure hydrocarbon", "facing": "RTJ", "classes": [600, 900, 1500, 2500],
+      "temp_max_C": 538, "type": "RTJ OCTAGONAL", "notes": "" },
+    { "service": "utility water / air", "facing": "RF/FF", "classes": [150],
+      "temp_max_C": 200, "type": "CNAF/FLAT", "notes": "" }
+  ]
+}

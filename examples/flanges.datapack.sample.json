@@ -1,0 +1,57 @@
+{
+  "meta": {
+    "schema": "flange-master v1",
+    "standard": "ASME B16.5",
+    "edition": "SYNTHETIC",
+    "SYNTHETIC": true,
+    "note": "SYNTHETIC / ILLUSTRATIVE rating and dimension values for demo only — NOT real ASME data. Replace locally with your own datapack (datapacks/flanges.json) built from your licensed standard.",
+    "pressure_units": "barg",
+    "temp_units": "C",
+    "dim_units": "mm"
+  },
+  "material_groups": [
+    {
+      "group": "1.1",
+      "description": "SYNTHETIC carbon steel group (A105-type)",
+      "specs": ["A105", "A216 WCB", "A350 LF2", "A106 B", "A234 WPB"],
+      "max_temp_C": 538,
+      "ratings": {
+        "150": [[38, 19.0], [100, 17.0], [200, 13.0], [300, 10.0], [400, 6.0], [538, 1.4]],
+        "300": [[38, 50.0], [100, 46.0], [200, 43.0], [300, 39.0], [400, 34.0], [538, 8.0]],
+        "600": [[38, 100.0], [100, 92.0], [200, 86.0], [300, 78.0], [400, 68.0], [538, 16.0]],
+        "900": [[38, 150.0], [100, 138.0], [200, 129.0], [300, 117.0], [400, 102.0], [538, 24.0]],
+        "1500": [[38, 250.0], [100, 230.0], [200, 215.0], [300, 195.0], [400, 170.0], [538, 40.0]],
+        "2500": [[38, 420.0], [100, 385.0], [200, 358.0], [300, 325.0], [400, 283.0], [538, 67.0]]
+      }
+    },
+    {
+      "group": "2.2",
+      "description": "SYNTHETIC austenitic group (316-type)",
+      "specs": ["A182 F316", "A351 CF8M", "A312 TP316"],
+      "max_temp_C": 816,
+      "ratings": {
+        "150": [[38, 19.0], [100, 16.0], [200, 13.5], [300, 11.0], [400, 9.0], [500, 6.0]],
+        "300": [[38, 49.0], [100, 42.0], [200, 36.0], [300, 32.0], [400, 29.0], [500, 26.0]],
+        "600": [[38, 99.0], [100, 84.0], [200, 72.0], [300, 64.0], [400, 58.0], [500, 52.0]]
+      }
+    }
+  ],
+  "dimensions": [
+    { "std": "ASME B16.5", "class": 150, "nps": "2", "type": "WN", "facing": "RF",
+      "flange_od_mm": 150.0, "thk_min_mm": 19.0, "raised_face_od_mm": 92.0,
+      "bolt_circle_mm": 120.0, "n_bolts": 4, "bolt_dia_in": "5/8", "bolt_hole_mm": 19.0,
+      "length_thru_hub_mm": 64.0, "ring_no": null, "weight_kg": 3.0 },
+    { "std": "ASME B16.5", "class": 150, "nps": "6", "type": "WN", "facing": "RF",
+      "flange_od_mm": 280.0, "thk_min_mm": 25.0, "raised_face_od_mm": 216.0,
+      "bolt_circle_mm": 241.0, "n_bolts": 8, "bolt_dia_in": "3/4", "bolt_hole_mm": 22.0,
+      "length_thru_hub_mm": 89.0, "ring_no": null, "weight_kg": 10.0 },
+    { "std": "ASME B16.5", "class": 300, "nps": "6", "type": "WN", "facing": "RF",
+      "flange_od_mm": 318.0, "thk_min_mm": 36.0, "raised_face_od_mm": 216.0,
+      "bolt_circle_mm": 270.0, "n_bolts": 12, "bolt_dia_in": "3/4", "bolt_hole_mm": 22.0,
+      "length_thru_hub_mm": 98.0, "ring_no": null, "weight_kg": 18.0 },
+    { "std": "ASME B16.5", "class": 600, "nps": "6", "type": "WN", "facing": "RTJ",
+      "flange_od_mm": 356.0, "thk_min_mm": 48.0, "raised_face_od_mm": 216.0,
+      "bolt_circle_mm": 292.0, "n_bolts": 12, "bolt_dia_in": "1", "bolt_hole_mm": 25.0,
+      "length_thru_hub_mm": 117.0, "ring_no": "R-45", "weight_kg": 33.0 }
+  ]
+}

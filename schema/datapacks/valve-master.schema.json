@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/ahmadr59-ops/pms-toolkit/schema/datapacks/valve-master.schema.json",
+  "title": "valve-master v1",
+  "description": "Valve datapack: type/trim selection matrix (API 600/602/594/609/6D conventions) plus ASME B16.10 face-to-face dimensions. Pressure-temperature ratings come from the flange datapack (ASME B16.34 standard class = B16.5 material groups); do not duplicate them here.",
+  "type": "object",
+  "required": ["meta"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["schema"],
+      "properties": {
+        "schema": { "const": "valve-master v1" },
+        "edition": { "type": "string" },
+        "SYNTHETIC": { "type": "boolean" },
+        "note": { "type": "string" },
+        "dim_units": { "const": "mm" }
+      }
+    },
+    "selection": {
+      "type": "array",
+      "description": "One row per valve family per size band — the PMS valve-selection matrix.",
+      "items": {
+        "type": "object",
+        "required": ["type", "design_std"],
+        "properties": {
+          "type": { "type": "string", "description": "GATE, GLOBE, CHECK, BALL, BUTTERFLY, PLUG" },
+          "design_std": { "type": "string", "description": "API 600, API 602, API 594, API 609, API 6D, BS 1873, ..." },
+          "size_from": { "type": "string" },
+          "size_to": { "type": "string" },
+          "classes": { "type": "array", "items": { "type": "integer" } },
+          "ends": { "type": "string", "description": "FLG RF, FLG RTJ, SW, THD, BW, WAFER, LUG" },
+          "body": { "type": "string", "description": "body material, e.g. A216 WCB, A105, A351 CF8M" },
+          "trim": { "type": "string", "description": "e.g. API 600 Trim No. 8 (13Cr / hardfaced)" },
+          "bonnet": { "type": "string" },
+          "operation": { "type": "string", "description": "HW, GO (gear operated), lever" },
+          "test_std": { "type": "string", "default": "API 598" },
+          "sour_service": { "type": ["boolean", "null"], "description": "true = NACE MR0175/ISO 15156 construction" },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "face_to_face": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "class", "nps"],
+        "properties": {
+          "std": { "type": "string", "default": "ASME B16.10" },
+          "type": { "type": "string" },
+          "pattern": { "type": "string", "description": "e.g. long, short, wafer" },
+          "class": { "type": "integer" },
+          "nps": { "type": "string" },
+          "ff_mm": { "type": ["number", "null"] },
+          "notes": { "type": "string" }
+        }
+      }
+    }
+  }
+}

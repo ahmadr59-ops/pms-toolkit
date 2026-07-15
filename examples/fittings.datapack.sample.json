@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "schema": "fitting-master v1",
+    "edition": "SYNTHETIC",
+    "SYNTHETIC": true,
+    "note": "SYNTHETIC / ILLUSTRATIVE dimensions for demo only — NOT real ASME/MSS data. Replace locally with your own datapack (datapacks/fittings.json).",
+    "dim_units": "mm"
+  },
+  "buttweld": [
+    { "std": "ASME B16.9", "type": "ELBOW 90 LR", "nps": "2", "nps_branch": null,
+      "dims": { "center_to_end_A": 76.0 }, "notes": "" },
+    { "std": "ASME B16.9", "type": "ELBOW 90 LR", "nps": "6", "nps_branch": null,
+      "dims": { "center_to_end_A": 229.0 }, "notes": "" },
+    { "std": "ASME B16.9", "type": "ELBOW 45 LR", "nps": "6", "nps_branch": null,
+      "dims": { "center_to_end_B": 95.0 }, "notes": "" },
+    { "std": "ASME B16.9", "type": "TEE EQUAL", "nps": "6", "nps_branch": "6",
+      "dims": { "center_to_end_C": 143.0, "center_to_end_M": 143.0 }, "notes": "" },
+    { "std": "ASME B16.9", "type": "TEE RED", "nps": "6", "nps_branch": "4",
+      "dims": { "center_to_end_C": 143.0, "center_to_end_M": 137.0 }, "notes": "" },
+    { "std": "ASME B16.9", "type": "RED CON", "nps": "6", "nps_branch": "4",
+      "dims": { "length_H": 140.0 }, "notes": "" },
+    { "std": "ASME B16.9", "type": "CAP", "nps": "6", "nps_branch": null,
+      "dims": { "length_E": 89.0 }, "notes": "" }
+  ],
+  "socket_threaded": [
+    { "std": "ASME B16.11", "type": "ELBOW 90", "class": 3000, "end": "SW", "nps": "3/4",
+      "dims": { "center_to_socket_A": 19.0, "socket_bore_B": 27.5, "socket_depth_J": 13.0 }, "notes": "" },
+    { "std": "ASME B16.11", "type": "TEE EQUAL", "class": 3000, "end": "SW", "nps": "3/4",
+      "dims": { "center_to_socket_A": 19.0 }, "notes": "" },
+    { "std": "ASME B16.11", "type": "COUPLING FULL", "class": 3000, "end": "THD", "nps": "3/4",
+      "dims": { "length_W": 44.0 }, "notes": "" }
+  ],
+  "olets": [
+    { "std": "MSS SP-97", "type": "WELDOLET", "run_nps": "8", "branch_nps": "2", "class": null,
+      "dims": { "height_L": 57.0 }, "notes": "run range 8–36 (SYNTHETIC)" },
+    { "std": "MSS SP-97", "type": "SOCKOLET", "run_nps": "8", "branch_nps": "3/4", "class": 3000,
+      "dims": { "height_L": 38.0 }, "notes": "" }
+  ]
+}

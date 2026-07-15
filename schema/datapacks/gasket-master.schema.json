@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/ahmadr59-ops/pms-toolkit/schema/datapacks/gasket-master.schema.json",
+  "title": "gasket-master v1",
+  "description": "Gasket datapack: ASME B16.20 (spiral wound / RTJ / grooved-metal) and ASME B16.21 (nonmetallic) dimensions, plus a service-based selection table. Real dimension tables are copyrighted and must live only in a private, git-ignored datapack.",
+  "type": "object",
+  "required": ["meta"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["schema"],
+      "properties": {
+        "schema": { "const": "gasket-master v1" },
+        "edition": { "type": "string" },
+        "SYNTHETIC": { "type": "boolean" },
+        "note": { "type": "string" },
+        "dim_units": { "const": "mm" }
+      }
+    },
+    "gaskets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "class", "nps"],
+        "properties": {
+          "std": { "type": "string", "description": "ASME B16.20 or B16.21" },
+          "type": { "type": "string", "description": "SPIRAL WOUND, RTJ OVAL, RTJ OCTAGONAL, CNAF/FLAT, KAMMPROFILE" },
+          "class": { "type": "integer" },
+          "nps": { "type": "string" },
+          "dims": {
+            "type": "object",
+            "description": "e.g. inner_ring_od_mm, winding_id_mm, winding_od_mm, outer_ring_od_mm, thickness_mm; RTJ: ring_no, pitch_dia_mm",
+            "additionalProperties": { "type": ["number", "string", "null"] }
+          },
+          "construction": { "type": "string", "description": "e.g. SS316L winding / flexible graphite filler / CS outer ring / SS316 inner ring" },
+          "temp_range_C": {
+            "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "number" }
+          },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "selection": {
+      "type": "array",
+      "description": "Which gasket type each service/facing gets — the PMS gasket-selection rules.",
+      "items": {
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "service": { "type": "string" },
+          "facing": { "type": "string" },
+          "classes": { "type": "array", "items": { "type": "integer" } },
+          "temp_max_C": { "type": ["number", "null"] },
+          "type": { "type": "string" },
+          "notes": { "type": "string" }
+        }
+      }
+    }
+  }
+}

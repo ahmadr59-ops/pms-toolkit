@@ -14,9 +14,8 @@
   <span class="badge" id="b-comps">—</span>
   <div class="grow"></div>
   <input id="global" type="text" placeholder="Search all components…" style="width:300px">
-  <label class="sec" style="padding:6px 11px;border-radius:8px;cursor:pointer;border:1px solid var(--edge)">
-    Import JSON<input id="file" type="file" accept="application/json,.json" hidden>
-  </label>
+  <button class="sec" id="data-btn">Data</button>
+  <input id="file" type="file" accept="application/json,.json" hidden>
 </header>
 
 <nav class="tabs">
@@ -48,6 +47,45 @@
 <section id="specbuilder" class="view"></section>
 <section id="schema" class="view"></section>
 <section id="export" class="view"></section>
+
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <button class="close" id="modal-close" title="Close">×</button>
+    <div id="modal-step1">
+      <h2>Get started</h2>
+      <div class="sub">Choose how to load data. Everything stays in your browser — nothing is uploaded to GitHub.</div>
+      <div class="opt">
+        <div class="card" id="opt-sample">
+          <h3>Use sample data</h3>
+          <p>Load the built-in synthetic demo (a small example PMS + demo stress data). Best for a first look.</p>
+        </div>
+        <div class="card" id="opt-mine">
+          <h3>Load my data</h3>
+          <p>Upload your own PMS JSON (and, optionally, your material stress data for Thickness &amp; Spec Builder).</p>
+        </div>
+      </div>
+    </div>
+    <div id="modal-step2" style="display:none">
+      <h2>Load my data</h2>
+      <div class="sub">Pick your files, then press Run. Only the PMS is required.</div>
+      <div class="slot">
+        <div><span class="n">① PMS file</span><span class="req">required</span><div class="d">Your pipe classes &amp; components (.json from <code>pmskit parse</code>)</div></div>
+        <span class="st" id="st-pms">not selected</span>
+        <label class="sec" style="cursor:pointer;padding:6px 10px;border:1px solid var(--edge);border-radius:8px">Upload<input id="in-pms" type="file" accept=".json,application/json" hidden></label>
+      </div>
+      <div class="slot">
+        <div><span class="n">② Material stress data</span><span class="optn">optional</span><div class="d">Allowable-stress table — enables Thickness &amp; Spec Builder (.json)</div></div>
+        <span class="st" id="st-mat">not selected</span>
+        <label class="sec" style="cursor:pointer;padding:6px 10px;border:1px solid var(--edge);border-radius:8px">Upload<input id="in-mat" type="file" accept=".json,application/json" hidden></label>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;margin-top:16px">
+        <button class="sec" id="modal-back">← Back</button>
+        <div class="grow"></div>
+        <button id="modal-run" disabled style="opacity:.5;cursor:not-allowed">Run</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script src="compare.js"></script>
 <script src="thickness.js"></script>

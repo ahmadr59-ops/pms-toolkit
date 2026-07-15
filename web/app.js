@@ -13,14 +13,9 @@ const CLASSES = () => DATA.classes || [];
 
 // ---------- data loading ----------
 async function boot(){
-  try{
-    const r = await fetch('data/pms.json', {cache:'no-store'});
-    if(r.ok){ setData(await r.json()); return; }
-  }catch(e){/* file:// or missing — fall through */}
-  // fallback embedded minimal notice
-  setData({meta:{company:'(no data)',class_count:0}, classes:[]});
-  $('#overview').innerHTML = `<div class="drop">No <code>data/pms.json</code> found. Use <b>Import JSON</b> (top-right) to load a PMS,
-    or generate one with <code>pmskit parse yourfile.doc -o pms.json</code>.</div>`;
+  setData({meta:{}, classes:[]});      // start empty; the Get-started modal drives loading
+  await loadDB();                       // preload schedule dims + sample stress data
+  openModal(true);                      // first-run: show Get started
 }
 function setData(d){
   DATA = d && d.classes ? d : {meta:{}, classes:[]};
@@ -28,6 +23,7 @@ function setData(d){
   $('#b-company').textContent = DATA.meta.company || 'PMS';
   $('#b-classes').textContent = CLASSES().length + ' classes';
   $('#b-comps').textContent = CLASSES().reduce((a,c)=>a+(c.component_count||0),0) + ' components';
+  THK=null; SPEC=null;
   renderOverview(); renderList(); renderMain(); renderValidate(); renderExport();
 }
 
@@ -419,5 +415,34 @@ async function renderSpecBuilder(){
     setData(DATA); alert('Class '+nc.class+' added to the loaded PMS (in memory). Use Export to save.');
   };
 }
+
+// ---------- Get-started data modal ----------
+let pendPMS=null, pendMAT=null;
+function hasData(){return (DATA.classes||[]).length>0;}
+function mShowStep(n){$('#modal-step1').style.display=n===1?'':'none';$('#modal-step2').style.display=n===2?'':'none';}
+function openModal(step1){ $('#modal').classList.add('open'); mShowStep(step1?1:2);
+  $('#modal-close').style.display=hasData()?'':'none'; }
+function closeModal(){ if(hasData()) $('#modal').classList.remove('open'); }
+async function useSample(){
+  await loadDB();
+  try{const r=await fetch('data/pms.json',{cache:'no-store'});if(r.ok)setData(await r.json());}catch(e){}
+  try{const b=await fetch('data/materials.sample.json');if(b.ok)MATDB=await b.json();}catch(e){}
+  $('#modal').classList.remove('open');
+}
+function readJSON(file,cb){const r=new FileReader();r.onload=()=>{try{cb(JSON.parse(r.result));}catch(e){alert('Invalid JSON: '+e.message);}};r.readAsText(file);}
+function refreshRun(){const b=$('#modal-run'); if(!b)return; const on=!!pendPMS;
+  b.disabled=!on; b.style.opacity=on?'1':'.5'; b.style.cursor=on?'pointer':'not-allowed';}
+
+$('#data-btn').onclick=()=>openModal(true);
+$('#modal-close').onclick=closeModal;
+$('#opt-sample').onclick=useSample;
+$('#opt-mine').onclick=()=>{mShowStep(2);};
+$('#modal-back').onclick=()=>{mShowStep(1);};
+$('#in-pms').onchange=e=>{const f=e.target.files[0];if(f)readJSON(f,d=>{pendPMS=d;
+  $('#st-pms').innerHTML=`<span class="ok">✓ ${esc((d.meta&&d.meta.company)||'loaded')} · ${(d.classes||[]).length} classes</span>`;refreshRun();});};
+$('#in-mat').onchange=e=>{const f=e.target.files[0];if(f)readJSON(f,d=>{pendMAT=d;
+  const n=(d.materials||[]).length; $('#st-mat').innerHTML=`<span class="ok">✓ ${n} materials${(d.meta&&d.meta.SYNTHETIC)?' (synthetic)':''}</span>`;});};
+$('#modal-run').onclick=async()=>{ if(!pendPMS)return; await loadDB();
+  if(pendMAT)MATDB=pendMAT; setData(pendPMS); $('#modal').classList.remove('open'); };
 
 boot();

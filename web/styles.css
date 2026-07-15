@@ -50,3 +50,20 @@ pre{background:var(--card);border:1px solid var(--edge);border-radius:10px;paddi
 .drop{border:2px dashed var(--edge);border-radius:12px;padding:22px;text-align:center;color:var(--mut);background:var(--card)}
 .drop.hover{border-color:var(--acc);color:var(--txt)}
 @media(max-width:760px){.wrap{grid-template-columns:1fr;height:auto}.side{max-height:38vh}}
+/* onboarding data gate */
+.modal-bg{position:fixed;inset:0;background:rgba(4,8,18,.72);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+.modal-bg.open{display:flex}
+.modal{background:var(--panel);border:1px solid var(--edge);border-radius:14px;max-width:620px;width:100%;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.modal h2{margin:0 0 4px}
+.modal .close{float:right;cursor:pointer;color:var(--mut);font-size:20px;line-height:1;border:none;background:none}
+.opt{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.opt .card{background:var(--card);border:1px solid var(--edge);border-radius:12px;padding:16px;cursor:pointer;transition:border-color .15s}
+.opt .card:hover{border-color:var(--acc)}
+.opt .card h3{margin:0 0 6px;font-size:15px}
+.opt .card p{margin:0;color:var(--mut);font-size:12px}
+.slot{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--edge);border-radius:10px;padding:12px;margin-top:10px}
+.slot .n{font-weight:650}.slot .d{color:var(--mut);font-size:12px}
+.slot .st{margin-left:auto;font-size:13px}
+.slot .ok{color:var(--acc2);font-weight:700}
+.req{color:var(--warn);font-size:11px;border:1px solid var(--warn);border-radius:10px;padding:1px 7px;margin-left:6px}
+.optn{color:var(--mut);font-size:11px;border:1px solid var(--edge);border-radius:10px;padding:1px 7px;margin-left:6px}

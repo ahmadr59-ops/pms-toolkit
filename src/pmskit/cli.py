@@ -23,7 +23,9 @@ from .compare import compare
 from .deviation_export import to_deviation_xlsx
 from .thickness import required_thickness, y_coefficient
 from .compliance import check_pms
+from .compliance_export import to_compliance_xlsx
 from .specbuilder import build_spec
+from .calc_import import convert as convert_calc
 
 
 def _load(path):
@@ -127,6 +129,13 @@ def cmd_check(a):
               f"req={r['required_mm']} act={r['actual_wall_mm']} margin={r['margin_mm']}")
     print(f"\nB31.3 schedule check: {s['ok']} OK, {s['under']} UNDER-THICKNESS, {s['not_evaluated']} not-evaluated "
           f"(of {s['total']})")
+    if a.xlsx:
+        project = {}
+        for kv in (a.meta or []):
+            if "=" in kv:
+                k, v = kv.split("=", 1); project[k] = v
+        to_compliance_xlsx(res, a.xlsx, project)
+        print(f"Compliance report -> {a.xlsx}")
     if a.json_out:
         with open(a.json_out, "w", encoding="utf-8") as fp:
             json.dump(res, fp, ensure_ascii=False, indent=1)
@@ -151,6 +160,17 @@ def cmd_build_spec(a):
         with open(a.output, "w", encoding="utf-8") as f:
             json.dump(out, f, ensure_ascii=False, indent=1)
         print(f"\nJSON -> {a.output}")
+    return 0
+
+
+def cmd_import_stress(a):
+    out = convert_calc(a.input)
+    n = len(out["materials"])
+    with open(a.output, "w", encoding="utf-8") as f:
+        json.dump(out, f, ensure_ascii=False, indent=1)
+    print(f"Converted {n} materials -> {a.output}")
+    print("This file contains your allowable-stress data. Keep it local (it is git-ignored).")
+    print("Use it in the dashboard: Data -> Load my data -> Material stress data.")
     return 0
 
 
@@ -208,6 +228,8 @@ def build_parser():
     sc.add_argument("--E", type=float, default=1.0); sc.add_argument("--W", type=float, default=1.0)
     sc.add_argument("--mill-tol", dest="mill_tol", type=float, default=0.125)
     sc.add_argument("--only-flagged", action="store_true", help="show only UNDER-THICKNESS rows")
+    sc.add_argument("--xlsx", default=None, help="write a formatted B31.3 compliance report .xlsx")
+    sc.add_argument("--meta", nargs="*", help="project metadata k=v (project, doc_no, rev, date, title)")
     sc.add_argument("--json-out", default=None)
     sc.set_defaults(func=cmd_check)
 
@@ -229,6 +251,12 @@ def build_parser():
     sb.add_argument("--company", default="SPEC-BUILDER")
     sb.add_argument("-o", "--output", default=None)
     sb.set_defaults(func=cmd_build_spec)
+
+    si = sub.add_parser("import-stress",
+                        help="Convert a local B31.3 calculator's material table into materials.json")
+    si.add_argument("input", help="path to your calculator .html (or .js) file")
+    si.add_argument("-o", "--output", default="materials.json")
+    si.set_defaults(func=cmd_import_stress)
     return p
 
 

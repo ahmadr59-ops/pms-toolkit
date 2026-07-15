@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.7.0
+- Standalone **Compliance** dashboard tab (moved out of Thickness): run the B31.3
+  schedule-adequacy check over the whole PMS, filter, export CSV.
+- Formatted B31.3 compliance **Excel** report (title block, project meta, colored status)
+  via `pmskit check pms.json --xlsx report.xlsx --meta project=... rev=...`.
+- Thickness tab is now a focused single-calculation tool.
+
+## 0.6.1
+- `pmskit import-stress` (and standalone tools/calc_to_datapack.py): convert a local
+  B31.3 calculator's material table into a materials.json datapack in one step.
+
 ## 0.6.0
 - Dashboard onboarding: "Get started" modal — Use sample data | Load my data.
 - Load-my-data shows PMS (required) + material stress data (optional) with checkmarks; Run when ready.

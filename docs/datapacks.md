@@ -47,3 +47,21 @@ pmskit check pms.json --datapack datapacks/materials.json --only-flagged
 
 Web dashboard: place `materials.json` at `web/data/materials.json` **locally**
 (also git-ignored) — the Thickness tab prefers it over the synthetic sample.
+
+
+## Easiest: convert from your existing B31.3 calculator
+
+If you have a wall-thickness calculator whose HTML contains a
+`DEFAULT_MATERIALS = [...]` table, generate the datapack in one command:
+
+```bash
+# with pmskit installed:
+pmskit import-stress your_calculator.html -o materials.json
+
+# or without installing anything:
+python tools/calc_to_datapack.py your_calculator.html materials.json
+```
+
+Then load `materials.json` in the dashboard: **Data → Load my data → Material
+stress data**. The file holds your allowable-stress values — keep it local
+(it is git-ignored).

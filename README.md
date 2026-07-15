@@ -31,7 +31,7 @@ validator, a Reference-vs-Contractor deviation engine, and a zero-dependency web
   (Copyrighted allowable-stress tables load from a local datapack — see [`docs/datapacks.md`](docs/datapacks.md).)
 - **Spec Builder** — propose a new pipe class from design conditions (min adequate schedule per size, B31.3).
 - **Exports** — JSON / CSV / XLSX.
-- **Dashboard** (`web/`) — Overview, Explorer, Validate, Deviation, Thickness, Spec Builder, Schema/JSON, Export,
+- **Dashboard** (`web/`) — Overview, Explorer, Validate, Deviation, Thickness, Compliance, Spec Builder, Schema/JSON, Export,
   drag-drop Import. Static; deployable free to GitHub Pages.
 
 ## Supported PMS sources (adapters)
@@ -70,10 +70,14 @@ pmskit deviation reference.json contractor.json --xlsx deviation.xlsx \
 # ASME B31.3 wall thickness (single calc) and schedule check over a PMS
 pmskit thickness --pressure 20 --od 219.1 --stress 120 --allowance 3
 pmskit check pms.json --datapack datapacks/materials.json --only-flagged
+pmskit check pms.json --xlsx compliance.xlsx --meta project="My Project" rev=A   # formatted report
 
 # Propose a new pipe class (min adequate schedule per size via B31.3)
 pmskit build-spec --name A1B1 --material "ASTM A106" --grade B --flange "CL.150 RF" \
         --ca "3.0 MM" --temp 38 200 400 --press 19.6 17.9 10.2 --size-from 1/2 --size-to 24 -o spec.json
+
+# Build your material stress datapack from your own B31.3 calculator (one step)
+pmskit import-stress your_calculator.html -o materials.json
 
 pmskit report pms.json      # coverage / confidence
 pmskit adapters             # list available company adapters

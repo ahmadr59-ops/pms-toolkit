@@ -1,6 +1,27 @@
 # Changelog
 
-## Unreleased (0.8.0 — component datapacks, Phase 0)
+## 0.8.0 — 2026-07-16 — Standards datapacks + Rule Engine
+- **ASME B16.34-2025 valves datapack** (`tools/b16_34_extract.py`): all 50
+  material groups, 11,774 rating points, Standard + Special Class up to
+  CL4500; body wall-thickness Table 3A and Table 4 verbatim. Engine-compatible
+  shape; Flange Rating tab gained a B16.34 selector. Print anomalies (G2.8
+  Special<Standard points, 4 monotonic upticks) confirmed against the PDF and
+  listed in meta.verify_flags.
+- **ASME B16.20-2023 + B16.21-2021 gaskets datapack**
+  (`tools/b16_20_21_extract.py` + `_refine.py`): 19 structured tables (~350
+  keyed rows) - Type R/RX/BX ring dimensions, spiral-wound OD/ID/centering and
+  inner-ring tables for B16.5 & B16.47 A/B, kammprofile, and B16.21 flat-ring/
+  full-face tables incl. CL150 bolting data; irregular tables kept verbatim
+  and flagged. New **Gaskets** dashboard tab.
+- **ASME B16.5-2025 dimension data** merged into the flange datapack:
+  drilling/bolting charts (incl. stud lengths), flange dimensions for all 7
+  classes, facings, ring-joint mapping (71 grooves, PDF-transcribed after the
+  source-export audit). **Dimensions & bolting chart** panel in the Flange
+  Rating tab.
+- **PDF corrections workflow** (`tools/apply_pdf_corrections.py`,
+  `B16-issues-for-PDF.xlsx`): every extraction ambiguity was resolved against
+  the printed standard and either fixed or confirmed-verbatim with flags -
+  nothing silently guessed.
 - **Fittings tab** in the dashboard: B16.9 / B16.11 dimension lookup by table
   and size (dual-unit display, printed blanks and round-off notes surfaced).
 - **Rule engine is now the default validate path** (Python wrapper with

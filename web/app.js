@@ -38,6 +38,7 @@ $$('.tab').forEach(t=>t.onclick=()=>{
   if(t.dataset.v==='compliance') renderCompliance();
   if(t.dataset.v==='flange') renderFlange();
   if(t.dataset.v==='fittings') renderFittings();
+  if(t.dataset.v==='gaskets') renderGaskets();
   if(t.dataset.v==='specbuilder') renderSpecBuilder();
 });
 
@@ -307,7 +308,7 @@ function renderDeviation(){
 // ---------- Thickness (ASME B31.3) ----------
 let SCHED=null, MATDB=null, THK=null, thkFilter='all';
 let FLG=null, FLG47=null, flgFilter='all';
-let FITT=null;
+let FITT=null, GSKT=null, VLV=null;
 async function loadDB(){
   if(SCHED&&MATDB&&FLG) return;
   const emb=n=>typeof loadEmbeddedDatapack==='function'?loadEmbeddedDatapack(n):null;
@@ -316,18 +317,24 @@ async function loadDB(){
   if(!FLG)   FLG=emb('flanges');
   if(!FLG47) FLG47=emb('flanges_b16_47');
   if(!FITT)  FITT=emb('fittings');
+  if(!GSKT)  GSKT=emb('gaskets');
+  if(!VLV)   VLV=emb('valves');
   if(!SCHED){try{const a=await fetch('data/schedules.json');SCHED=a.ok?await a.json():null;}catch(e){}}
   if(!MATDB){try{const b=await fetch('data/materials.json');if(b.ok)MATDB=await b.json();}catch(e){}}
   if(!MATDB){try{const b=await fetch('data/materials.sample.json');if(b.ok)MATDB=await b.json();}catch(e){}}
   if(!FLG){try{const c=await fetch('data/flanges.json');if(c.ok)FLG=await c.json();}catch(e){}}
   if(!FLG47){try{const c=await fetch('data/flanges_b16_47.json');if(c.ok)FLG47=await c.json();}catch(e){}}
   if(!FITT){try{const c=await fetch('data/fittings.json');if(c.ok)FITT=await c.json();}catch(e){}}
+  if(!GSKT){try{const c=await fetch('data/gaskets.json');if(c.ok)GSKT=await c.json();}catch(e){}}
+  if(!VLV){try{const c=await fetch('data/valves.json');if(c.ok)VLV=await c.json();}catch(e){}}
   if(!FLG47){try{const c=await fetch('../examples/flanges_b16_47.datapack.sample.json');if(c.ok)FLG47=await c.json();}catch(e){}}
   if(!FLG){try{const c=await fetch('../examples/flanges.datapack.sample.json');if(c.ok)FLG=await c.json();}catch(e){}}
   SCHED=SCHED||{pipe:{},aliases:{}}; MATDB=MATDB||{meta:{},materials:[]};
   FLG=FLG||{meta:{},material_groups:[]};
   FLG47=FLG47||{meta:{},material_groups:[]};
   FITT=FITT||{meta:{}};
+  GSKT=GSKT||{meta:{}};
+  VLV=VLV||{meta:{},material_groups:[]};
 }
 async function renderThickness(){
   await loadDB();
@@ -463,12 +470,13 @@ function renderFlangeAdequacy(){
 async function renderFlange(){
   await loadDB();
   const m=$('#flange');
-  const curPack=()=>($('#fl-std')&&$('#fl-std').value==='47')?FLG47:FLG;
+  const curPack=()=>{const v=$('#fl-std')&&$('#fl-std').value;
+    return v==='47'?FLG47:(v==='34'?VLV:FLG);};
   m.innerHTML=`<h2 style="margin-top:0">Flange Rating — P–T lookup</h2>
    <div class="sub">B16.5: ${flgMeta()} · B16.47: ${(FLG47.meta&&FLG47.meta.standard)?esc((FLG47.meta.standard||'')+' ed. '+(FLG47.meta.edition||'')+' · '+(FLG47.material_groups||[]).length+' groups'):'not loaded'}</div>
    ${flgWarn()}
    <div class="toolbar" style="flex-wrap:wrap;gap:8px">
-     <select id="fl-std"><option value="5">ASME B16.5 (NPS ≤ 24)</option><option value="47">ASME B16.47 (NPS 26–60)</option></select>
+     <select id="fl-std"><option value="5">ASME B16.5 (NPS ≤ 24)</option><option value="47">ASME B16.47 (NPS 26–60)</option>${(VLV&&(VLV.material_groups||[]).length)?'<option value="34">ASME B16.34 valves — Standard Class</option>':''}</select>
      <input id="fl-mat" type="text" placeholder="Material or group (e.g. A105, A216 WCB, 1.1)" style="width:280px">
      <input id="fl-T" type="number" placeholder="Design T (°C)" style="width:130px">
      <input id="fl-P" type="number" placeholder="Design P (barg)" style="width:140px">
@@ -602,6 +610,55 @@ function renderFittings(){
         (t.notes?`<div class="notebox" style="border-left-color:var(--edge)">Table notes (verbatim): ${esc(t.notes)}</div>`:'');
     };
     $('#ft-std').onchange=fillT; $('#ft-tbl').onchange=fillS; $('#ft-size').onchange=show;
+    fillT();
+  });
+}
+
+// ---------- Gaskets (ASME B16.20 / B16.21, datapack-driven) ----------
+function renderGaskets(){
+  loadDB().then(()=>{
+    const m=$('#gaskets');
+    const b20=GSKT&&GSKT.b16_20, b21=GSKT&&GSKT.b16_21;
+    if(!b20&&!b21){
+      m.innerHTML=`<h2 style="margin-top:0">Gaskets</h2>
+       <div class="notebox">No gaskets datapack loaded — place your <code>gaskets.json</code> at <code>web/data/</code>.</div>`;
+      return;
+    }
+    m.innerHTML=`<h2 style="margin-top:0">Gaskets — dimension lookup</h2>
+     <div class="sub">${b20?`B16.20 ed. ${esc(b20.edition)} (${b20.dimension_tables.length} structured tables)`:''}${b21?` · B16.21 ed. ${esc(b21.edition)} (${b21.dimension_tables.length} structured tables)`:''}. Values as printed; dual cells are [mm, in] cross-checked at 25.4. Column headers shown verbatim above each result.</div>
+     <div class="toolbar" style="flex-wrap:wrap;gap:8px">
+       <select id="gk-std">${b20?'<option value="20">ASME B16.20 (SW / RTJ / grooved-metal)</option>':''}${b21?'<option value="21">ASME B16.21 (nonmetallic)</option>':''}</select>
+       <select id="gk-tbl" style="max-width:360px"></select>
+       <select id="gk-key"></select>
+     </div>
+     <div id="gk-out"></div>`;
+    const sec=()=>$('#gk-std').value==='20'?b20:b21;
+    const fillT=()=>{
+      $('#gk-tbl').innerHTML=sec().dimension_tables
+        .slice().sort((a,b)=>a.table.localeCompare(b.table,undefined,{numeric:true}))
+        .map((t,i)=>`<option value="${esc(t.table)}">Table ${esc(t.table)}</option>`).join('');
+      fillK();};
+    const tbl=()=>sec().dimension_tables.find(t=>t.table===$('#gk-tbl').value);
+    const fillK=()=>{
+      $('#gk-key').innerHTML=(tbl().rows||[]).map(r=>`<option>${esc(r.key)}</option>`).join('');
+      show();};
+    const show=()=>{
+      const t=tbl(); const row=(t.rows||[]).find(r=>r.key===$('#gk-key').value);
+      if(!row){$('#gk-out').innerHTML='';return;}
+      const cells=row.v.map((v,j)=>{
+        let d;
+        if(v==null) d='<span class="muted">— (blank as printed)</span>';
+        else if(Array.isArray(v)) d=`<b>${v[0]}</b> mm <span class="muted">(${v[1]} in.)</span>`;
+        else if(v==='…') d='<span class="muted">…</span>';
+        else d=`<b>${esc(v)}</b>`;
+        return `<tr><td class="muted">col ${j+1}</td><td>${d}</td></tr>`;});
+      $('#gk-out').innerHTML=
+        `<div class="notebox" style="border-left-color:var(--edge)">Header (verbatim): ${esc((t.header_lines_raw||[]).join(' | ').slice(0,600))}</div>
+         <h3 style="margin-bottom:4px">Table ${esc(t.table)} — ${esc(row.key)}</h3>
+         <table style="max-width:700px"><tbody>${cells.join('')}</tbody></table>`+
+        (t.notes?`<div class="notebox" style="border-left-color:var(--edge)">Notes (verbatim): ${esc(t.notes.slice(0,600))}</div>`:'');
+    };
+    $('#gk-std').onchange=fillT; $('#gk-tbl').onchange=fillK; $('#gk-key').onchange=show;
     fillT();
   });
 }

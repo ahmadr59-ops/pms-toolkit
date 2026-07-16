@@ -30,9 +30,29 @@ validator, a Reference-vs-Contractor deviation engine, and a zero-dependency web
   thickness and flag PIPE rows whose selected schedule is thinner than required.
   (Copyrighted allowable-stress tables load from a local datapack — see [`docs/datapacks.md`](docs/datapacks.md).)
 - **Spec Builder** — propose a new pipe class from design conditions (min adequate schedule per size, B31.3).
+- **Flange P–T rating engine** — ASME B16.5 / B16.47 (Series A/B) / B16.34 valve
+  Standard-Class semantics: material-group resolution from text, linear
+  interpolation per the code method, smallest-adequate-class selection, and a
+  per-pipe-class flange-rating adequacy check (never a false pass). Mirrored
+  Python + JS engines; all rating values load from private datapacks.
+- **Standards datapacks** (private, git-ignored; extractors in `tools/`) —
+  B16.5-2025 (ratings, dimensions, drilling/bolting, facings, ring joints),
+  B16.47-2025 (Series A/B), B16.9-2018 & B16.11-2016 fittings (dual-unit,
+  mm/in cross-checked), B16.20-2023 & B16.21-2021 gaskets, B16.34-2025 valve
+  ratings (Standard + Special Class, 50 groups). Every extractor is strict:
+  closed size ladders, unit cross-checks, verbatim notes, loud failure —
+  no silent guessing. See [`docs/datapacks.md`](docs/datapacks.md).
+- **JSON Rule Engine** (`rules/`, [`docs/rules.md`](docs/rules.md)) — validation
+  conventions live in declarative, citable JSON rules; mirrored Python/JS
+  evaluators (no eval) with byte-parity gates in CI. Legacy path kept behind
+  `PMSKIT_LEGACY_VALIDATE=1` for one release.
 - **Exports** — JSON / CSV / XLSX.
-- **Dashboard** (`web/`) — Overview, Explorer, Validate, Deviation, Thickness, Compliance, Spec Builder, Schema/JSON, Export,
-  drag-drop Import. Static; deployable free to GitHub Pages.
+- **Dashboard** (`web/`) — Overview, Explorer, Validate, Deviation, Thickness,
+  Compliance (B31.3 + flange-rating adequacy), Flange Rating (P–T lookup,
+  dimensions & bolting chart), Fittings, Gaskets, Spec Builder, Schema/JSON,
+  Export, drag-drop Import. Static; deployable free to GitHub Pages.
+  `tools/build_offline.py` produces a single-file offline bundle with your
+  private datapacks embedded (never publish that file).
 
 ## Supported PMS sources (adapters)
 

@@ -143,3 +143,19 @@ def test_real_b16_47_datapack_if_installed():
     d = pack["dims"]["A:150"]
     row = next(r for r in d["rows"] if r["nps"] == "26")
     assert row["values"]["O.D. of Flange, O"] == 870.0
+
+
+def test_real_b16_34_datapack_if_installed():
+    """Spot values hand-read from the licensed ASME B16.34-2025 SI tables."""
+    import os, pytest
+    from pmskit.rating import _ROOT, rated_pressure
+    if not os.path.exists(os.path.join(_ROOT, "datapacks", "valves.json")):
+        pytest.skip("no private valves datapack")
+    pack = load_component_pack("valves")
+    assert pack["meta"]["standard"] == "ASME B16.34"
+    assert len(pack["material_groups"]) == 50
+    g = find_group(pack, "A216 WCB")
+    assert g["group"] == "1.1"
+    assert rated_pressure(g, 150, 38) == 19.6
+    assert rated_pressure(g, 4500, 38) == 765.3
+    assert rated_pressure(g, 150, 600) is None

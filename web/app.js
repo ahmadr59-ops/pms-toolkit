@@ -37,6 +37,7 @@ $$('.tab').forEach(t=>t.onclick=()=>{
   if(t.dataset.v==='thickness') renderThickness();
   if(t.dataset.v==='compliance') renderCompliance();
   if(t.dataset.v==='flange') renderFlange();
+  if(t.dataset.v==='fittings') renderFittings();
   if(t.dataset.v==='specbuilder') renderSpecBuilder();
 });
 
@@ -167,15 +168,32 @@ function validate(){
   });
   return F;
 }
+let RULEPACK=null;
+async function loadRulepack(){
+  if(RULEPACK!==null) return RULEPACK;
+  RULEPACK=(typeof loadEmbeddedDatapack==='function' && loadEmbeddedDatapack('rules'))||undefined;
+  if(!RULEPACK){try{const r=await fetch('../rules/conventions.json');if(r.ok)RULEPACK=await r.json();}catch(e){}}
+  if(!RULEPACK){try{const r=await fetch('data/rules.conventions.json');if(r.ok)RULEPACK=await r.json();}catch(e){}}
+  RULEPACK=RULEPACK||false;   // false = engine unavailable -> legacy JS checks
+  return RULEPACK;
+}
 function renderValidate(){
-  const F=validate();const s={error:0,warning:0,info:0};F.forEach(f=>s[f.sev]++);
+  loadRulepack().then(pack=>{
+    const F=(pack&&typeof runRules==='function')
+      ? runRules(DATA,pack).map(f=>({sev:f.severity,cls:f.class,code:f.code,msg:f.message}))
+      : validate();
+    renderValidateTable(F, !!pack);
+  });
+}
+function renderValidateTable(F, viaRules){
+  const s={error:0,warning:0,info:0};F.forEach(f=>s[f.sev]++);
   $('#validate').innerHTML=`
    <div class="cards">
      <div class="kv"><div class="k">Errors</div><div class="v sev-error">${s.error}</div></div>
      <div class="kv"><div class="k">Warnings</div><div class="v sev-warning">${s.warning}</div></div>
      <div class="kv"><div class="k">Info</div><div class="v">${s.info}</div></div>
    </div>
-   <p class="muted">Rule-based consistency checks only (standard flange classes, facings, P-T monotonicity). No copyrighted ASME/API tables are used or reproduced.</p>
+   <p class="muted">${viaRules?'Engine: modular JSON rules (rules/conventions.json).':'Engine: built-in checks (rule pack not found).'} Conventions only (standard flange classes, facings, P-T monotonicity). No copyrighted ASME/API tables are used or reproduced.</p>
    <table><thead><tr><th>Severity</th><th>Class</th><th>Code</th><th>Message</th></tr></thead>
    <tbody>${F.map(f=>`<tr><td class="sev-${f.sev}">${f.sev.toUpperCase()}</td><td>${esc(f.cls)}</td><td>${esc(f.code)}</td><td>${esc(f.msg)}</td></tr>`).join('')||'<tr><td colspan="4" class="muted">No findings.</td></tr>'}</tbody></table>`;
 }
@@ -289,6 +307,7 @@ function renderDeviation(){
 // ---------- Thickness (ASME B31.3) ----------
 let SCHED=null, MATDB=null, THK=null, thkFilter='all';
 let FLG=null, FLG47=null, flgFilter='all';
+let FITT=null;
 async function loadDB(){
   if(SCHED&&MATDB&&FLG) return;
   const emb=n=>typeof loadEmbeddedDatapack==='function'?loadEmbeddedDatapack(n):null;
@@ -296,16 +315,19 @@ async function loadDB(){
   if(!MATDB) MATDB=emb('materials');
   if(!FLG)   FLG=emb('flanges');
   if(!FLG47) FLG47=emb('flanges_b16_47');
+  if(!FITT)  FITT=emb('fittings');
   if(!SCHED){try{const a=await fetch('data/schedules.json');SCHED=a.ok?await a.json():null;}catch(e){}}
   if(!MATDB){try{const b=await fetch('data/materials.json');if(b.ok)MATDB=await b.json();}catch(e){}}
   if(!MATDB){try{const b=await fetch('data/materials.sample.json');if(b.ok)MATDB=await b.json();}catch(e){}}
   if(!FLG){try{const c=await fetch('data/flanges.json');if(c.ok)FLG=await c.json();}catch(e){}}
   if(!FLG47){try{const c=await fetch('data/flanges_b16_47.json');if(c.ok)FLG47=await c.json();}catch(e){}}
+  if(!FITT){try{const c=await fetch('data/fittings.json');if(c.ok)FITT=await c.json();}catch(e){}}
   if(!FLG47){try{const c=await fetch('../examples/flanges_b16_47.datapack.sample.json');if(c.ok)FLG47=await c.json();}catch(e){}}
   if(!FLG){try{const c=await fetch('../examples/flanges.datapack.sample.json');if(c.ok)FLG=await c.json();}catch(e){}}
   SCHED=SCHED||{pipe:{},aliases:{}}; MATDB=MATDB||{meta:{},materials:[]};
   FLG=FLG||{meta:{},material_groups:[]};
   FLG47=FLG47||{meta:{},material_groups:[]};
+  FITT=FITT||{meta:{}};
 }
 async function renderThickness(){
   await loadDB();
@@ -525,6 +547,63 @@ function renderFlangeDims(){
       (((FLG.dims||{})[c]||{}).notes?`<div class="notebox" style="border-left-color:var(--edge)">Dimension table notes (verbatim): ${esc(FLG.dims[c].notes)}</div>`:'');
   };
   $('#fd-cls').onchange=fillN; $('#fd-nps').onchange=show; fillN();
+}
+
+// ---------- Fittings (ASME B16.9 / B16.11, datapack-driven) ----------
+function renderFittings(){
+  loadDB().then(()=>{
+    const m=$('#fittings');
+    const b9=FITT&&FITT.b16_9, b11=FITT&&FITT.b16_11;
+    if(!b9&&!b11){
+      m.innerHTML=`<h2 style="margin-top:0">Fittings</h2>
+       <div class="notebox">No fittings datapack loaded — place your <code>fittings.json</code> at <code>web/data/</code> (built with <code>tools/b16_9_extract.py</code> / <code>tools/b16_11_extract.py</code>).</div>`;
+      return;
+    }
+    const meta=[b9?`B16.9 ed. ${esc(b9.edition)} (${b9.dimension_tables.length} tables)`:null,
+                b11?`B16.11 ed. ${esc(b11.edition)} (${b11.dimension_tables.length} tables)`:null]
+               .filter(Boolean).join(' · ');
+    m.innerHTML=`<h2 style="margin-top:0">Fittings — dimension lookup</h2>
+     <div class="sub">${meta}. Values exactly as printed in the standard${b9?'; every B16.9 mm/in pair machine-verified at 25.4':''}.</div>
+     <div class="toolbar" style="flex-wrap:wrap;gap:8px">
+       <select id="ft-std">${b9?'<option value="9">ASME B16.9 (buttweld)</option>':''}${b11?'<option value="11">ASME B16.11 (SW/threaded)</option>':''}</select>
+       <select id="ft-tbl" style="max-width:420px"></select>
+       <select id="ft-size"></select>
+     </div>
+     <div id="ft-out"></div>`;
+    const tables=()=>$('#ft-std').value==='9'?b9.dimension_tables:b11.dimension_tables;
+    const fillT=()=>{
+      $('#ft-tbl').innerHTML=tables().map((t,i)=>`<option value="${i}">T${t.table} — ${esc(t.title)}</option>`).join('');
+      fillS();};
+    const fillS=()=>{
+      const t=tables()[+$('#ft-tbl').value];
+      const key=$('#ft-std').value==='9'?'size':'nps';
+      $('#ft-size').innerHTML=t.rows.map(r=>`<option>${esc(r[key])}</option>`).join('');
+      show();};
+    const show=()=>{
+      const is9=$('#ft-std').value==='9';
+      const t=tables()[+$('#ft-tbl').value];
+      const sz=$('#ft-size').value;
+      const row=t.rows.find(r=>(is9?r.size:r.nps)===sz);
+      if(!row){$('#ft-out').innerHTML='';return;}
+      const cells=t.columns.map((lab,j)=>{
+        const v=row.v[j];
+        let disp;
+        if(v==null) disp='<span class="muted">— (blank as printed)</span>';
+        else if(Array.isArray(v)) disp=`<b>${v[0]}</b> mm <span class="muted">(${v[1]} in.)</span>`;
+        else if(v==='…') disp='<span class="muted">…</span>';
+        else disp=`<b>${esc(v)}</b>`;
+        return `<tr><td class="muted" style="width:62%">${esc(lab)}</td><td>${disp}</td></tr>`;});
+      const flags=(t.unit_roundoff_flags||[]).filter(f=>f.startsWith(sz+' '));
+      $('#ft-out').innerHTML=
+        `<h3 style="margin-bottom:4px">Table ${esc(t.table)} — ${is9?'':'NPS '}${esc(sz)}
+           <span class="muted" style="font-size:12px">(${is9?'mm (in.) as printed':'mm'})</span></h3>
+         <table style="max-width:760px"><tbody>${cells.join('')}</tbody></table>`+
+        (flags.length?`<div class="notebox">Round-off note (as printed): ${esc(flags.join('; '))}</div>`:'')+
+        (t.notes?`<div class="notebox" style="border-left-color:var(--edge)">Table notes (verbatim): ${esc(t.notes)}</div>`:'');
+    };
+    $('#ft-std').onchange=fillT; $('#ft-tbl').onchange=fillS; $('#ft-size').onchange=show;
+    fillT();
+  });
 }
 
 // ---------- Spec Builder (ASME B31.3) ----------

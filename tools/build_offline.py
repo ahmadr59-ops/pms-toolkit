@@ -29,7 +29,8 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PACKS = ("flanges", "flanges_b16_47", "fittings", "valves", "gaskets", "bolting", "materials")
-CORE = {"schedules": os.path.join(ROOT, "data", "schedules.json")}
+CORE = {"schedules": os.path.join(ROOT, "data", "schedules.json"),
+        "rules": os.path.join(ROOT, "rules", "conventions.json")}
 
 
 def _read(path):

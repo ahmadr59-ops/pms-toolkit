@@ -65,3 +65,61 @@ python tools/calc_to_datapack.py your_calculator.html materials.json
 Then load `materials.json` in the dashboard: **Data → Load my data → Material
 stress data**. The file holds your allowable-stress values — keep it local
 (it is git-ignored).
+
+---
+
+# Component datapacks (flanges, fittings, valves, gaskets, bolting)
+
+Since v0.8 the same private-datapack pattern covers the remaining PMS
+components. Each pack has a JSON Schema in [`schema/datapacks/`](../schema/datapacks/)
+and a **synthetic** sample in [`examples/`](../examples/):
+
+| Datapack (private, git-ignored) | Schema | Content | Source standards |
+|---|---|---|---|
+| `datapacks/flanges.json`  | `flange-master v1`  | P–T ratings per material group, flange dimensions, bolting chart | ASME B16.5 / B16.47 |
+| `datapacks/fittings.json` | `fitting-master v1` | buttweld, SW/threaded, branch-outlet dimensions | ASME B16.9, B16.11, MSS SP-97 |
+| `datapacks/valves.json`   | `valve-master v1`   | type/trim selection matrix, face-to-face | API 600/602/594/609/6D, ASME B16.10 |
+| `datapacks/gaskets.json`  | `gasket-master v1`  | SW/RTJ/flat dimensions, selection rules | ASME B16.20, B16.21 |
+| `datapacks/bolting.json`  | `bolting-master v1` | stud/nut pairs, temp limits, NACE alternatives, torque | ASTM A193/A194/A320, ASME PCC-1 |
+
+Rules, identical to the material datapack:
+
+- Real ASME/API/MSS table values are **copyrighted** — they live only in the
+  git-ignored `datapacks/` directory, never in the repo.
+- Always record `meta.edition` (e.g. `"2020"`) — P–T ratings differ between
+  editions; never mix editions inside one pack.
+- Shipped samples carry `meta.SYNTHETIC: true` and clearly fake values.
+- Valve P–T ratings are **not** duplicated in the valve pack: ASME B16.34
+  standard-class ratings use the same material groups as B16.5, so the rating
+  engine (`pmskit.rating`, `web/rating.js`) reads the flange pack.
+
+## Rating engine
+
+```python
+from pmskit.rating import load_flanges, find_group, rated_pressure, select_class, flange_adequacy
+
+pack  = load_flanges()                        # private pack, else synthetic sample
+group = find_group(pack, "A216 WCB")          # -> material group dict
+rated_pressure(group, 300, 250)               # barg at 250 C, CL300
+select_class(group, [(38, 19.6), (200, 15)])  # smallest adequate class
+flange_adequacy(pms_json)                     # one adequacy row per pipe class
+```
+
+`flange_adequacy` never produces a false pass — anything unresolvable
+(no `CL.###`, unknown material group, no P–T points, temperature above the
+rated range) is reported `not-evaluated`.
+
+## Offline single-file bundle
+
+To keep an **offline** copy of the dashboard (or another HTML tool) with your
+datapacks embedded:
+
+```bash
+python tools/build_offline.py                      # -> dist/pms-dashboard-offline.html
+python tools/build_offline.py --html mytool.html -o dist/mytool-offline.html
+```
+
+Datapacks are embedded as `<script type="application/json" id="datapack-…">`
+blocks (read them with `loadEmbeddedDatapack(name)` from `web/rating.js`).
+The bundle may contain your licensed data: `dist/` is git-ignored —
+**never publish a bundle built from real datapacks**.

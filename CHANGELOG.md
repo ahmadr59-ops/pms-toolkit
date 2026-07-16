@@ -1,6 +1,22 @@
 # Changelog
 
 ## Unreleased (0.8.0 — component datapacks, Phase 0)
+- **Fittings tab** in the dashboard: B16.9 / B16.11 dimension lookup by table
+  and size (dual-unit display, printed blanks and round-off notes surfaced).
+- **Rule engine is now the default validate path** (Python wrapper with
+  PMSKIT_LEGACY_VALIDATE=1 escape hatch; web Validate tab runs rules/
+  conventions.json when available, built-in checks otherwise; offline bundle
+  embeds the rule pack). Parity gates stay in CI.
+- **JSON Rule Engine (rule-master v1, shadow mode)**: declarative rules in
+  `rules/conventions.json`, mirrored engines `pmskit/rules.py` + `web/rules.js`
+  (no eval; tiny structured condition dialect). Legacy `pmskit.validate` stays
+  the default behind two parity gates: `tests/test_rules_shadow.py`
+  (old==new, every branch) and `tools/check_rules_parity.py` (Python==JS).
+- **ASME B16.9-2018 + B16.11-2016 fittings datapack** (`datapacks/fittings.json`):
+  B16.9 - 11 dimension tables, 611 rows, dual-unit values with a 25.4 mm/in
+  cross-check on every pair; B16.11 - 6 metric tables (coordinate-verified) +
+  correlation tables verbatim. Extractors: `tools/b16_9_extract.py`,
+  `tools/b16_11_extract.py`.
 - **ASME B16.47-2025 datapack** (`tools/b16_47_extract.py` -> git-ignored
   `datapacks/flanges_b16_47.json`): 27 material groups (2,975 rating points,
   classes 75-900), Series A/B dimension+drilling tables (NPS 26-60), RTJ

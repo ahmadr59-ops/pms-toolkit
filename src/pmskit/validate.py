@@ -43,6 +43,21 @@ def _facing(flange_text):
 
 
 def validate(data: Dict[str, Any]) -> List[dict]:
+    """Default: the JSON rule engine (rules/conventions.json), proven
+    byte-identical to the legacy implementation by tests/test_rules_shadow.py.
+    Set PMSKIT_LEGACY_VALIDATE=1 to force the legacy code path (kept for one
+    release as the strangler-pattern escape hatch)."""
+    import os
+    if os.environ.get("PMSKIT_LEGACY_VALIDATE") != "1":
+        try:
+            from .rules import run_conventions
+            return run_conventions(data)
+        except FileNotFoundError:
+            pass  # rule pack missing -> legacy fallback
+    return validate_legacy(data)
+
+
+def validate_legacy(data: Dict[str, Any]) -> List[dict]:
     findings: List[dict] = []
     for c in data.get("classes", []):
         cls = c.get("class")

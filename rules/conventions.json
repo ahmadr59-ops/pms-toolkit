@@ -1,0 +1,98 @@
+{
+ "meta": {
+  "schema": "rule-master v1",
+  "name": "PMS consistency conventions",
+  "version": "1.0.0",
+  "note": "Publicly-established engineering conventions only (standard class series, facings, physical monotonicity). No copyrighted rating values. Message templates must stay byte-identical to the legacy pmskit.validate output while the shadow-parity gate is active.",
+  "context_fields": "Engine-derived per class: derived.flange_class_number (int|null, from CL.### in flange_rating_face), derived.facing (RTJ/FFS/RJ/RF/FF/MFF/LMF/SMF|null), derived.has_cl_token (bool), derived.pt_len_equal (bool|null when either array empty), derived.press_monotonic_violation (bool). Per component (scope=component): comp.part, comp.description, derived.component_class_number (int|null)."
+ },
+ "facts": {
+  "ASME_B16_5_CLASSES": [150, 300, 400, 600, 900, 1500, 2500],
+  "CAST_IRON_CLASSES": [125, 250],
+  "KNOWN_FACINGS": ["RF", "FF", "RTJ", "FFS", "RJ", "MFF", "LMF", "SMF"],
+  "COMPONENT_COMMON_CLASSES": [150, 300, 600, 800, 900, 1500, 2500]
+ },
+ "rules": [
+  {
+   "id": "FLANGE_CLASS_UNKNOWN", "scope": "class", "severity": "warning",
+   "source": "ASME B16.5 / B16.1 class series (public fact)",
+   "when": {"and": [
+     {"truthy": {"var": "flange_rating_face"}},
+     {"!=": [{"var": "derived.flange_class_number"}, null]},
+     {"!in": [{"var": "derived.flange_class_number"},
+              {"facts+": ["ASME_B16_5_CLASSES", "CAST_IRON_CLASSES"]}]}]},
+   "message": "Flange class CL{derived.flange_class_number} is not a standard ASME B16.5/B16.1 class",
+   "context": {"var": "flange_rating_face"}
+  },
+  {
+   "id": "FACING_MISSING", "scope": "class", "severity": "info",
+   "source": "convention",
+   "when": {"and": [
+     {"truthy": {"var": "flange_rating_face"}},
+     {"==": [{"var": "derived.facing"}, null]},
+     {"truthy": {"var": "derived.has_cl_token"}}]},
+   "message": "No standard facing (RF/FF/RTJ...) found in flange rating",
+   "context": {"var": "flange_rating_face"}
+  },
+  {
+   "id": "RTJ_LOW_CLASS", "scope": "class", "severity": "warning",
+   "source": "industry convention (guidance, not a hard rule)",
+   "when": {"and": [
+     {"truthy": {"var": "derived.flange_class_number"}},
+     {"==": [{"var": "derived.facing"}, "RTJ"]},
+     {"<": [{"var": "derived.flange_class_number"}, 600]}]},
+   "message": "RTJ facing is unusual below Class 600 (here CL{derived.flange_class_number})",
+   "context": {"var": "flange_rating_face"}
+  },
+  {
+   "id": "FF_HIGH_CLASS", "scope": "class", "severity": "warning",
+   "source": "industry convention (guidance, not a hard rule)",
+   "when": {"and": [
+     {"truthy": {"var": "derived.flange_class_number"}},
+     {"==": [{"var": "derived.facing"}, "FF"]},
+     {">=": [{"var": "derived.flange_class_number"}, 300]}]},
+   "message": "Flat-face (FF) is unusual at Class {derived.flange_class_number} and above",
+   "context": {"var": "flange_rating_face"}
+  },
+  {
+   "id": "CA_MISSING", "scope": "class", "severity": "info",
+   "source": "completeness",
+   "when": {"!": {"truthy": {"var": "corrosion_allowance"}}},
+   "message": "Corrosion allowance not captured for this class",
+   "context": null
+  },
+  {
+   "id": "PT_LENGTH_MISMATCH", "scope": "class", "severity": "error",
+   "source": "data integrity",
+   "when": {"==": [{"var": "derived.pt_len_equal"}, false]},
+   "message": "Temp points ({derived.pt_len}) != pressure points ({derived.press_len})",
+   "context": null
+  },
+  {
+   "id": "PT_NOT_MONOTONIC", "scope": "class", "severity": "warning",
+   "source": "physics: rated pressure must not increase with temperature",
+   "when": {"truthy": {"var": "derived.press_monotonic_violation"}},
+   "message": "Allowable pressure increases with temperature (check parse/data)",
+   "context": {"object": {"press_barg": {"var": "press_barg"}}}
+  },
+  {
+   "id": "COMPONENT_CLASS_NOTE", "scope": "component", "severity": "info",
+   "source": "cross-check: component CL vs class flange CL (800 allowed: SW valves)",
+   "when": {"and": [
+     {"truthy": {"var": "derived.flange_class_number"}},
+     {"regex_match": [{"var": "comp.part"}, "FLANGE|VALVE"]},
+     {"!=": [{"var": "derived.component_class_number"}, null]},
+     {"!in": [{"var": "derived.component_class_number"},
+              {"facts+var": ["COMPONENT_COMMON_CLASSES", "derived.flange_class_number"]}]}]},
+   "message": "{comp.part} references CL{derived.component_class_number} vs class flange CL{derived.flange_class_number}",
+   "context": {"var": "comp.description"}
+  },
+  {
+   "id": "NO_COMPONENTS", "scope": "class", "severity": "warning",
+   "source": "completeness",
+   "when": {"!": {"truthy": {"var": "component_count"}}},
+   "message": "Class has no parsed component rows",
+   "context": null
+  }
+ ]
+}
